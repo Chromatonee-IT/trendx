@@ -1,0 +1,411 @@
+{% extends 'main.html'%}
+{% load static %}
+
+{% block content%}
+
+<style>
+    .file-input-container {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        padding: 0.5rem;
+    }
+    .file-input {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+</style>
+
+
+            <!-- Body: Body -->
+            <div class="body d-flex py-3">
+                <div class="container-xxl">
+
+                    <div class="row align-items-center">
+                        <div class="border-0 mb-4">
+                            <div class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap">
+                                <h3 class="fw-bold mb-0">Products Details</h3>
+                                <button type="submit" class="btn btn-primary btn-set-task w-sm-100 py-2 px-5 text-uppercase">Update</button>
+                            </div>
+                        </div>
+                    </div> <!-- Row end  -->  
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-xl-4 col-lg-4">
+                            <div class="sticky-lg-top">
+                                <div class="card mb-3">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                        <h6 class="m-0 fw-bold">Pricing Info</h6>
+                                    </div>
+                                    <div class="card-body">
+                                    {% for p in product %}
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-12">
+                                                <label  class="form-label">Product Price Old</label>
+                                                <input type="text" value="{{p.itm_old_price}}" class="form-control">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label  class="form-label">Product Price New</label>
+                                                <input type="text" value="{{p.itm_new_price}}" class="form-control">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label  class="form-label">Product Coupon</label>
+                                                <input type="text" class="form-control" {% if coupon %} value="{{coupon}}"{% else %} value="No Discount"{% endif %}>
+                                            </div>
+                                        </div>
+                                    {%endfor%}
+                                    </div>
+                                </div>
+                                <div class="card mb-3">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                        <h6 class="m-0 fw-bold">Visibility Status</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="couponsstatus" checked>
+                                            <label class="form-check-label">
+                                                Active
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="couponsstatus">
+                                            <label class="form-check-label">
+                                                Inactive
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="card mb-3">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                        <h6 class="m-0 fw-bold">Size</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="sizechek1">
+                                            <label class="form-check-label" for="sizechek1">
+                                            XS
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="sizechek2">
+                                            <label class="form-check-label" for="sizechek2">
+                                            S
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="sizechek3">
+                                            <label class="form-check-label" for="sizechek3">
+                                            M
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="sizechek4">
+                                            <label class="form-check-label" for="sizechek4">
+                                            L
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="sizechek5">
+                                            <label class="form-check-label" for="sizechek5">
+                                            XL
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mb-3">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                        <h6 class="m-0 fw-bold">Tags</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group demo-tagsinput-area">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" data-role="tagsinput">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% for p in product%}
+                                <div class="card mb-3">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                        <h6 class="m-0 fw-bold">Categories</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <label  class="form-label">Categories Select</label>
+                                        <select class="form-select" size="3" aria-label="size 3 select example">
+                                            {% for category in categories%}
+                                            <option value="{{forloop.counter}}" {% if p.itmclass|lower == category.itmclass|lower %}selected{% endif %}>{{category.classname}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card mb-3">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                        <h6 class="m-0 fw-bold">Sub Categories</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <label  class="form-label">Sub Categories Select</label>
+                                        <select class="form-select" size="3" aria-label="size 3 select example">
+                                            {% for scategory in sub_categories%}
+                                            <option value="{{forloop.counter}}" {%if p.itmsubclass|lower == scategory.itmsubclass|lower%}selected{%endif%}>{{scategory.classname}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                        <h6 class="m-0 fw-bold">Inventory Info</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-12">
+                                                <label  class="form-label">SKU Number</label>
+                                                <input type="text" value="{{product.itmclass}}" class="form-control">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label  class="form-label">Tag Number</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8 col-lg-8">
+                            <div class="card mb-3">
+                                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
+                                    <h6 class="mb-0 fw-bold ">Basic information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-6">
+                                                <label  class="form-label">Name</label>
+                                                <input type="text" value="{{p.itmname}}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label  class="form-label">Product Title</label>
+                                                <input type="text" value="{{p.itmtitle}}" class="form-control">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label">Product Description</label>
+                                                <div  id="editor">
+                                                    <textarea type="text" class="form-control">{{p.itmdesc}}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
+                                    <h6 class="mb-0 fw-bold ">Meta information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-6">
+                                                <label  class="form-label">Link</label>
+                                                <input type="text" value="" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label  class="form-label">Meta Title</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label">Meta Description</label>
+                                                <div  id="editor">
+                                                    <textarea type="text" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
+                                    <h6 class="mb-0 fw-bold ">Product Variants</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-12">
+                                                <div class="product-cart">
+                                                    <div class="checkout-table table-responsive">
+                                                        <table id="myCartTable" class="table display dataTable table-hover align-middle" style="width:100%">
+
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="product">Product Variant Name</th>
+                                                                    <th class="quantity">Color</th>
+                                                                    <th class="quantity">Quantity</th>
+                                                                    <th class="quantity">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            {% for pro_var in variants%}
+                                                            {% if pro_var.is_active%}
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="text" value="{{pro_var.varient_name}}"  class="form-control" placeholder="Product tag name">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="color" value="{{pro_var.color_code}}" class="form-control">
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="product-quantity d-inline-flex">
+                                                                            <input type="number" value="{{pro_var.quantity}}">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                                                            <button type="button" class="btn btn-outline-secondary deleterow"><i class="icofont-ui-delete text-danger"></i></button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                            {%endif%}
+                                                        {% endfor %}
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card mb-3">
+                                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
+                                    <h6 class="mb-0 fw-bold ">Images</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-12">
+                                                <label class="form-label">Product Images Upload</label>
+                                                <small class="d-block text-muted mb-2">Only portrait or square images, 2M max and 2000px max-height.</small>
+                                            </div>
+                                            <div class="col-md-12">
+
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="product-details">
+                                                            <div class="row align-items-center">
+                                                                {% for p in product %}
+                                                                    <div class="product-details-image mt-50">
+                                                                        <div class="product-thumb-image">
+                                                                            <div class="product-thumb-image-active nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                                                                <a class="single-thumb" id="v-pills-one-tab" data-bs-toggle="pill" href="#v-pills-one" role="button" aria-controls="v-pills-one" >
+                                                                                    <img src={% if p.product_images.image1%}"/{{p.product_images.image1}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                                <a class="single-thumb" id="v-pills-two-tab" data-bs-toggle="pill" href="#v-pills-two" role="button" aria-controls="v-pills-two">
+                                                                                    <img src={% if p.product_images.image2%}"/{{p.product_images.image2}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                                <a class="single-thumb active" aria-current="page" id="v-pills-three-tab" data-bs-toggle="pill" role="button" href="#v-pills-three"  aria-controls="v-pills-three">
+                                                                                    <img src={% if p.product_images.image3%}"/{{p.product_images.image3}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                                <a class="single-thumb" id="v-pills-four-tab" data-bs-toggle="pill" href="#v-pills-four" role="button" aria-controls="v-pills-four">
+                                                                                    <img src={% if p.product_images.image4%}"/{{p.product_images.image4}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                                <a class="single-thumb" id="v-pills-five-tab" data-bs-toggle="pill" href="#v-pills-five"  role="button" aria-controls="v-pills-five">
+                                                                                    <img src={% if p.product_images.image5%}"/{{p.product_images.image5}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="product-image">
+                                                                            <div class="product-image-active tab-content" id="v-pills-tabContent">
+                                                                                <a class="single-image tab-pane fade" id="v-pills-one" role="tabpanel" aria-labelledby="v-pills-one-tab">
+                                                                                    <div class="file-input-container">
+                                                                                        <label for="image1" class="btn btn-primary">Update Image</label>
+                                                                                        <input type="file" name="image1" id="image" class="file-input" accept="image/*">
+                                                                                    </div>
+                                                                                    <img id="previewImage" src={% if p.product_images.image1%}"/{{p.product_images.image1}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+
+                                                                                <a class="single-image tab-pane fade" id="v-pills-two" role="tabpanel" aria-labelledby="v-pills-two-tab">
+                                                                                    <div class="file-input-container">
+                                                                                    <label for="image2" class="btn btn-primary">Update Image</label>
+                                                                                    <input type="file" name="image2" id="image2" class="file-input" accept="image/*">
+                                                                                    </div>
+                                                                                    <img src={% if p.product_images.image2%}"/{{p.product_images.image2}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+
+                                                                                <a class="single-image tab-pane fade active show" id="v-pills-three" role="tabpanel" aria-labelledb
+                                                                                y="v-pills-three-tab">
+                                                                                <div class="file-input-container">
+                                                                                    <label for="image3" class="btn btn-primary">Update Image</label>
+                                                                                    <input type="file" name="image3" id="image3" class="file-input" accept="image/*">
+                                                                                </div>
+                                                                                    <img src={% if p.product_images.image3%}"/{{p.product_images.image3}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                                <a class="single-image tab-pane fade" id="v-pills-four" role="tabpanel" aria-labelledby="v-pills-four-tab">
+                                                                                    <div class="file-input-container">
+                                                                                        <label for="image4" class="btn btn-primary">Update Image</label>
+                                                                                        <input type="file" name="image4" id="image4" class="file-input" accept="image/*">
+                                                                                    </div>
+                                                                                    <img src={% if p.product_images.image4%}"/{{p.product_images.image4}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                                <a class="single-image tab-pane fade " id="v-pills-five" role="tabpanel" aria-labelledby="v-pills-five-tab">
+                                                                                    <div class="file-input-container">
+                                                                                        <label for="image" class="btn btn-primary">Update Image</label>
+                                                                                        <input type="file" name="image1" id="image" class="file-input" accept="image/*">
+                                                                                    </div>
+                                                                                    <img id="previewImage" src={% if p.product_images.image5%}"/{{p.product_images.image5}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div><!-- Row end  --> 
+                    
+                </div>
+            </div>    
+        
+
+            <script src="http://pixelwibes.com/template/ebazar/html/js/template.js"></script>
+<script>
+                // Get references to the file input and the image tag
+                var fileInput = document.getElementById('image');
+                var previewImage = document.getElementById('previewImage');
+            
+                // Add an event listener to the file input to detect changes
+                fileInput.addEventListener('change', function () {
+                    // Check if a file has been selected
+                    if (fileInput.files && fileInput.files[0]) {
+                        var reader = new FileReader();
+            
+                        // Set up the reader to read the selected file as a data URL
+                        reader.onload = function (e) {
+                            // Set the source of the preview image to the data URL
+                            previewImage.src = e.target.result;
+                        };
+            
+                        // Read the selected file as a data URL
+                        reader.readAsDataURL(fileInput.files[0]);
+                    }
+                });
+</script>
+
+{% endblock content %}zˀ

@@ -1,0 +1,163 @@
+{% extends "store/main.html" %} {% load static%}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+{% block content%}
+<!--start shop cart-->
+<section class="py-0 py-lg-5">
+  <div class="container">
+    <div
+      class="section-authentication-signin d-flex align-items-center justify-content-center my-5"
+    >
+      <div class="row row-cols-1 row-cols-lg-1 row-cols-xl-2">
+        <div class="col mx-auto">
+          <div class="card mb-0">
+            <div class="card-body">
+              <div class="border p-4 rounded">
+                {% if messages%} {{message.tags}}
+                <div class="alert alert-danger fade show" id="alert-box">
+                  <div class="d-flex align-items-center">
+                    <i class="bx bx-error fs-5 m-2"></i>
+                    {% for message in messages%} {{message}} {% endfor %}
+                  </div>
+                </div>
+                {% endif %}
+                <div class="text-center">
+                  <h3 class="">Sign Up</h3>
+                  <p>
+                    Already have an account?
+                    <a href="{%  url 'login'%}">Sign in here</a>
+                  </p>
+                </div>
+                <div class="d-grid">
+                  <a class="btn my-4 shadow-sm btn-white" href="javascript:;">
+                    <span
+                      class="d-flex justify-content-center align-items-center"
+                    >
+                      <img
+                        class="me-2"
+                        src="{% static 'images/search.svg'%}"
+                        width="16"
+                        alt="Image Description"
+                      />
+                      <span>Sign Up with Google</span>
+                    </span>
+                  </a>
+                </div>
+                <div class="login-separater text-center mb-4">
+                  <span>OR SIGN UP WITH EMAIL</span>
+                  <hr />
+                </div>
+                <div class="form-body">
+                  <form class="row g-3" method="post">
+                    {% csrf_token %}
+                    <div class="col-12">
+                      <label for="id_username" class="form-label"
+                        >User Id</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="username"
+                        placeholder="example@user"
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label for="id_name" class="form-label">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="name"
+                        placeholder="Your Name"
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label for="id_email" class="form-label"
+                        >Email Address</label
+                      >
+                      <input
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        placeholder="example@user.com"
+                      />
+                    </div>
+                    <div class="col-12">
+                      <label for="id_password" class="form-label"
+                        >Phone Number</label
+                      >
+                      <div class="input-group" id="show_hide_password">
+                        <input
+                          type="phone"
+                          class="form-control border-end-0"
+                          name="phone"
+                          placeholder="0123456789"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <label for="id_password" class="form-label"
+                        >Password</label
+                      >
+                      <div class="input-group" id="show_hide_password">
+                        <input
+                          type="password"
+                          class="form-control border-end-0"
+                          name="password"
+                          value="Password"
+                          placeholder="Enter Password"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-check form-switch">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="flexSwitchCheckChecked"
+                        />
+                        <label
+                          class="form-check-label"
+                          for="flexSwitchCheckChecked"
+                          >I read and agree to Terms & Conditions</label
+                        >
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="d-grid">
+                        <button type="submit" class="btn btn-dark">
+                          <i class="bx bx-user"></i>Sign up
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end row-->
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+  $(function () {
+    "use strict";
+
+    $(document).ready(function () {
+      $("#show_hide_password a").on("click", function (event) {
+        event.preventDefault();
+        if ($("#show_hide_password input").attr("type") == "text") {
+          $("#show_hide_password input").attr("type", "password");
+          $("#show_hide_password i").addClass("bx-hide");
+          $("#show_hide_password i").removeClass("bx-show");
+        } else if ($("#show_hide_password input").attr("type") == "password") {
+          $("#show_hide_password input").attr("type", "text");
+          $("#show_hide_password i").removeClass("bx-hide");
+          $("#show_hide_password i").addClass("bx-show");
+        }
+      });
+    });
+  });
+</script>
+<!--end shop cart-->̉̉ {% endblock content%}

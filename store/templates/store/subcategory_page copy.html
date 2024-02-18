@@ -1,0 +1,551 @@
+{% extends "store/main.html" %}
+
+{% load static%}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+{% block content%}
+
+<div class="container py-3 border-bottom border-top d-none d-md-flex bg-light">
+    <div class="page-breadcrumb ">
+            <h3 class="breadcrumb-title pe-3 text-center">{{cur_category}}</h3>
+    </div>
+</div>
+
+
+					<!--start categories-->
+					<section class="py-4">
+						<div class="container">
+							<div class="separator pb-4">
+								<div class="line"></div>
+								<h5 class="mb-0 fw-bold separator-title">Browse Sub Catergory</h5>
+								<div class="line"></div>
+							 </div>
+	
+							<div class="product-grid">
+								<div class="browse-category owl-carousel owl-theme">
+                                {% for sub_category in sub_categories%}
+									<div class="item">
+										<div class="card rounded-0">
+											{% comment %} <div class="card-body p-0">
+												<img src="assets/images/categories/01.png" class="img-fluid" alt="...">
+											</div> {% endcomment %}
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-0 text-uppercase fw-bold">{{sub_category.classname}}</h6>
+                                                <a href="/{{cur_category}}/{{sub_category.classname}}/">
+												<p class="mb-0 font-12 text-uppercase"><strong>{{sub_category.get_product_total}}</strong></p></a>
+											</div>
+										</div>
+									</div>
+                                {% endfor %}
+									{% comment %} <div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/02.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Watches</h6>
+												<p class="mb-0 font-12 text-uppercase">8 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/03.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Shoes</h6>
+												<p class="mb-0 font-12 text-uppercase">14 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/04.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Bags</h6>
+												<p class="mb-0 font-12 text-uppercase">6 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/05.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Electronis</h6>
+												<p class="mb-0 font-12 text-uppercase">6 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/06.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Headphones</h6>
+												<p class="mb-0 font-12 text-uppercase">5 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/07.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Furniture</h6>
+												<p class="mb-0 font-12 text-uppercase">20 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/08.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Jewelry</h6>
+												<p class="mb-0 font-12 text-uppercase">16 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/09.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Sports</h6>
+												<p class="mb-0 font-12 text-uppercase">28 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/10.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Vegetable</h6>
+												<p class="mb-0 font-12 text-uppercase">15 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/11.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Medical</h6>
+												<p class="mb-0 font-12 text-uppercase">24 Products</p>
+											</div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="card rounded-0">
+											<div class="card-body p-0">
+												<img src="assets/images/categories/12.png" class="img-fluid" alt="...">
+											</div>
+											<div class="card-footer text-center bg-transparent border">
+												<h6 class="mb-1 text-uppercase fw-bold">Sunglasses</h6>
+												<p class="mb-0 font-12 text-uppercase">18 Products</p>
+											</div>
+										</div>
+									</div> {% endcomment %}
+								</div>
+							</div>
+						</div>
+					</section>
+					<!--end categories-->
+
+                    <!--start New Arrivals-->
+                    <section class="py-4">
+                        <div class="container">
+							 <div class="separator pb-4">
+								<div class="line"></div>
+								<h5 class="mb-0 fw-bold separator-title">New Arrivals</h5>
+								<div class="line"></div>
+							 </div>
+							<div class="product-grid">
+								<div class="new-arrivals owl-carousel owl-theme position-relative">
+                                    {% for items in new_arrival%}
+                                    {% if items%}
+									 <div class="item">
+										<div class="card p-3 border shadow">
+											<div class="position-relative overflow-hidden">
+												<div class="add-cart position-absolute top-0 end-0 mt-3 me-3">
+													<a href="javascript:;"><i class='bx bx-cart-add' ></i></a>
+												  </div>
+											  <div class="quick-view position-absolute start-0 bottom-0 end-0">
+												<a href="javascript:;" data-bs-toggle="modal" data-bs-target="#QuickViewProduct">Quick View</a>
+											  </div>
+											  <a href="javascript:;">
+												<img style="object-fit:contain; height:180px" src="{{items.product_images.image1.url}}" class="img-fluid" alt="...">
+											  </a>
+											</div>
+											<div class="card-body px-0">
+											  <div class="d-flex align-items-center justify-content-between">
+												  <div class="">
+													  <p class="mb-1 product-short-name">{{items.itmclass}}</p>
+													  <h6 class="mb-1 fw-bold product-short-title">{{items.itmname|truncatechars:20}}</h6>
+												  </div>
+												  <div class="icon-wishlist">
+													  <a href="javascript:;"><i class="bx bx-heart"></i></a>
+												  </div>
+											  </div>
+											  <div class="product-price mt-2 d-flex align-items-center justify-content-start">
+												<div class="h6 fw-light fw-bold text-secondary text-decoration-line-through">₹{{items.itm_new_price}}</div>
+												<div class="h6 fw-bold">₹{{items.itm_new_price}}</div>
+											  </div>
+											</div>
+										  </div>
+									   </div>
+                                    {%else%}
+                                    <h3>No products{{average_rating}}</h3>
+                                    {% endif%}
+                                    {% endfor %}
+								</div>
+							</div>
+                        </div>
+                    </section>
+					<!--end New Arrivals-->
+
+
+<section class="py-4 border-top">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
+            <div class="col">
+                <div class="bestseller-list mb-3">
+                    <h6 class="mb-3 text-uppercase fw-bold">Best Selling Products</h6>
+                    <hr>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/01.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Men Casual Shirts</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/02.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Formal Coat Pant</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/03.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Women Blue Jeans</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/04.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Yellow Track Suit</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="featured-list mb-3">
+                    <h6 class="mb-3 text-uppercase fw-bold">Featured Products</h6>
+                    <hr>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/05.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Men Sports Shoes</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/06.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Black Sofa Set</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/07.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Sports Watch</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/08.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Women Blue Heels</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="new-arrivals-list mb-3">
+                    <h6 class="mb-3 text-uppercase fw-bold">New arrivals</h6>
+                    <hr>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="jproduct-details.html">
+                                <img src="assets/images/products/09.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Men Black Cap</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/10.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Orange Headphone</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/11.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Samsung Mobile</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/12.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Apple Notebook</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="top-rated-products-list mb-3">
+                    <h6 class="mb-3 text-uppercase fw-bold">Top rated Products</h6>
+                    <hr>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/13.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Ronaldo Football</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/14.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Red Fancy Sofa</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/15.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Sports Cycle</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bottom-product-img">
+                            <a href="product-details.html">
+                                <img src="assets/images/products/16.png" width="80" alt="">
+                            </a>
+                        </div>
+                        <div class="ms-0">
+                            <h6 class="mb-0 fw-light mb-1 fw-bold">Circular Table</h6>
+                            <div class="rating"> <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                                <i class="bx bxs-star text-warning"></i>
+                            </div>
+                            <p class="mb-0 pro-price"><strong>$59.00</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end row-->
+    </div>
+</section>
+{% endblock content%}

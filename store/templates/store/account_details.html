@@ -1,0 +1,125 @@
+{% extends "store/main.html" %}
+
+{% load static%}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+{% block content%}
+<div class="d-flex justify-content-center">
+    {% if messages%}
+    {% for message in messages%}
+    <div class="alert {{message.tags}} fade show" id="alert-box">
+        <div class="d-flex align-items-center">
+        <i class='bx bx-info-circle fs-5 m-2'></i>
+        {{message}}
+        {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+</div>
+{{message.tags}}
+	{% if cur_user%}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top  d-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Account Details</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Account Details</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Account</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-lg-4">
+										<div class="card shadow-none mb-3 mb-lg-0 border">
+											<div class="card-body">
+												<div class="list-group list-group-flush">
+													<a href="{% url 'dashboard'%}" class="list-group-item active d-flex justify-content-between align-items-center">Account Details <i class='bx bx-user-circle fs-5'></i></a>
+													<a href="{% url 'orders'%}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Orders <i class='bx bx-box fs-5'></i></a>
+													<a href="{% url 'address'%}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Addresses <i class='bx bx-home-smile fs-5'></i></a>
+													<a href="{% url 'payment_method'%}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Payment Methods <i class='bx bx-credit-card fs-5'></i></a>
+                                                    <a href="{% url 'my_reviews' %}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">My Reviews <i class='bx bx-star fs-5'></i></a>
+													<a href="{% url 'logout'%}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Logout <i class='bx bx-log-out fs-5'></i></a>
+												</div>
+											</div>
+										</div>
+										<div class="container border my-3 rounded">
+											<div class="card-body">
+												<div class="list-group list-group-flush">
+											<a href="{% url 'cart'%}" class="list-group-item d-flex justify-content-between align-items-center">Open Cart <i class='bx bx-cart-alt fs-5'></i></a>
+											<a href="{% url 'my_favourites'%}" class="list-group-item d-flex justify-content-between align-items-center">Open Favourites <i class='bx bx-heart fs-5'></i></a>
+										</div>	
+									</div>	
+									</div>
+									</div>
+									<div class="col-lg-8">
+										<div class="card shadow-none mb-0 border">
+											<div class="card-body">
+											{% for user in cur_user%}
+												<form method="post" class="row g-3">
+													{% csrf_token %}
+													<div class="col-12">
+														<label class="form-label">Name</label>
+														<input type="text" name="name" class="form-control" value={{user.name}}>
+													</div>
+													<div class="col-12">
+														<label class="form-label">Phone</label>
+														<input type="phone" name="phone" class="form-control" value={{user.phone_number}}>
+													</div>
+													<div class="col-12">
+														<label class="form-label">Email address</label>
+														<input type="text" name="email" class="form-control" value={{user.email}}>
+													</div>
+													<div class="col-12" id="show_hide_password">
+														<label class="form-label">Enter New Password</label>
+														<input type="password" name="password1" class="form-control" value="">
+													</div>
+													<div class="col-12" id="show_hide_password">
+														<label class="form-label">Confirm New Password</label>
+														<input type="password" name="password2" class="form-control" value="">
+													</div>
+													<div class="col-12">
+														<button type="submit" class="btn btn-dark" value="Submit">Save Changes</button>
+													</div>
+												</form>
+											{% endfor %}
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--end row-->
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		<script type="text/javascript">
+			function hide_alert(){
+				document.getElementById("alert-box").style.display="None";
+			   }
+			   setTimeout(hide_alert,3000);
+		</script>
+	{% endif %}
+{% endblock content%}
+
+
+
