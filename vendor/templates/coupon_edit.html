@@ -3,6 +3,8 @@
 {% block content%}
 {% for coupon in coupon%}
 <div class="body d-flex py-lg-3 py-md-2">
+<form action="/coupon_edit/{{coupon.id}}" method="post">
+    {% csrf_token %}
     <div class="container-xxl">
         <div class="row align-items-center">
             <div class="border-0 mb-4">
@@ -20,13 +22,13 @@
                     </div>
                     <div class="card-body">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="couponsstatus" {%if coupon.is_active == True %}checked{%endif%}>
+                            <input class="form-check-input" type="radio" value="True" name="couponsstatus" {%if coupon.is_active == True %}checked{%endif%}>
                             <label class="form-check-label" >
                                 Active
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="couponsstatus" {%if coupon.is_active == False %}checked{%endif%}>
+                            <input class="form-check-input" type="radio" value="False" name="couponsstatus" {%if coupon.is_active == False %}checked{%endif%}>
                             <label class="form-check-label">
                                 In Active
                             </label>
@@ -41,11 +43,11 @@
                         <div class="row g-3 align-items-center">
                             <div class="col-md-12">
                                 <label class="form-label">Start Date</label>
-                                <input type="date" class="form-control w-100" value="{{ coupon.start_date|date:"Y-m-d" }}">
+                                <input type="date" name="start_date" class="form-control w-100" value="{{ coupon.start_date|date:"Y-m-d" }}">
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label">End Date</label> 
-                                <input type="date" class="form-control w-100" value="{{ coupon.end_date|date:"Y-m-d" }}">
+                                <input type="date" name="end_date" class="form-control w-100" value="{{ coupon.end_date|date:"Y-m-d" }}">
                             </div>
                         </div>
                     </div>
@@ -60,33 +62,41 @@
                         <form>
                             <div class="row g-3 align-items-center">
                                 <div class="col-md-6">
-                                    <label class="form-label">Coupons Code</label>
-                                    <input type="text" class="form-control" value="{{coupon.offer}}">
+                                <label class="form-label">Coupons Code</label>
+                                    <input name="coupon_name" type="text" class="form-control" value="{{coupon.offer}}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Discount Category</label>
-                                    <select class="form-select" size="3" aria-label="size 3 select example">
+                                    <select name="discount_category" class="form-select" size="3" aria-label="size 3 select example">
+                                    {% if coupon.if_on_category is None %}
+                                        <option value="" selected>None</option>
                                         {% for category in categories%}
-                                        <option value="{{forloop.counter}}" {%if coupon.if_on_category|lower == category.classname|lower%}selected{%endif%}>{{category.classname}}</option>
+                                        <option value="{{category.id}}">{{category.classname}}</option>
                                         {% endfor %}
+                                    {% else %}
+                                        <option value="">None</option>
+                                        {% for category in categories%}
+                                        <option value="{{category.id}}" {%if coupon.if_on_category|lower == category.classname|lower%}selected{%endif%}>{{category.classname}}</option>
+                                        {% endfor %}
+                                    {% endif %}
                                     </select>
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label">Coupons Types</label>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="couponstype"{% if coupon.offer_cat.id == 3%}checked{% endif %}>
+                                        <input class="form-check-input" value=3 type="radio" name="couponstype" {% if coupon.offer_cat.id == 3%}checked{% endif %}>
                                         <label class="form-check-label">
                                             Free Shipping
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="couponstype"{% if coupon.offer_cat.id == 2%}checked{% endif %}>
+                                        <input class="form-check-input" value=2 type="radio" name="couponstype" {% if coupon.offer_cat.id == 2%}checked{% endif %}>
                                         <label class="form-check-label">
                                             Percentage (%)
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="couponstype"{% if coupon.offer_cat.id == 1%}checked{% endif %}>
+                                        <input class="form-check-input" value=1 type="radio" name="couponstype" {% if coupon.offer_cat.id == 1%}checked{% endif %}>
                                         <label class="form-check-label">
                                             Fixed Amount
                                         </label>
@@ -94,7 +104,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label">Discount value</label>
-                                    <input type="text" class="form-control" value="{{coupon.discount_value}}">
+                                    <input type="text" name="discount_value" class="form-control" value="{{coupon.discount_value}}">
                                 </div>
                             </div>
                         </form>
@@ -103,6 +113,7 @@
             </div>
         </div>
     </div>
+</form>
 </div>
 {% endfor %}
 {% endblock content%}

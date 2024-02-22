@@ -24,7 +24,8 @@
             <!-- Body: Body -->
             <div class="body d-flex py-3">
                 <div class="container-xxl">
-
+                <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
                     <div class="row align-items-center">
                         <div class="border-0 mb-4">
                             <div class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap">
@@ -45,16 +46,20 @@
                                     {% for p in product %}
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-12">
+                                                <label  class="form-label">Product Id</label>
+                                                <input name="pro_id" id="pro_id" type="number" value="{{p.id}}" class="form-control" readonly>
+                                            </div>
+                                            <div class="col-md-12">
                                                 <label  class="form-label">Product Price Old</label>
-                                                <input type="text" value="{{p.itm_old_price}}" class="form-control">
+                                                <input name="old_price" type="text" value="{{p.itm_old_price}}" class="form-control">
                                             </div>
                                             <div class="col-md-12">
                                                 <label  class="form-label">Product Price New</label>
-                                                <input type="text" value="{{p.itm_new_price}}" class="form-control">
+                                                <input name="new_price" type="text" value="{{p.itm_new_price}}" class="form-control">
                                             </div>
                                             <div class="col-md-12">
                                                 <label  class="form-label">Product Coupon</label>
-                                                <input type="text" class="form-control" {% if coupon %} value="{{coupon}}"{% else %} value="No Discount"{% endif %}>
+                                                <input name="product_coupon" type="text" class="form-control" {% if coupon %} value="{{coupon}}"{% else %} value="No Discount"{% endif %} >
                                             </div>
                                         </div>
                                     {%endfor%}
@@ -65,22 +70,23 @@
                                         <h6 class="m-0 fw-bold">Visibility Status</h6>
                                     </div>
                                     <div class="card-body">
+                                    {% for product in product %}
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="couponsstatus" checked>
-                                            <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" value="True" name="product_status" {%if product.itm_isactive == True %}checked{%endif%}>
+                                            <label class="form-check-label" >
                                                 Active
                                             </label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="couponsstatus">
+                                            <input class="form-check-input" type="radio" value="False" name="product_status" {%if product.itm_isactive == False %}checked{%endif%}>
                                             <label class="form-check-label">
-                                                Inactive
+                                                In Active
                                             </label>
                                         </div>
-
+                                    {% endfor %}
                                     </div>
                                 </div>
-                                <div class="card mb-3">
+                                {% comment %} <div class="card mb-3">
                                     <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
                                         <h6 class="m-0 fw-bold">Size</h6>
                                     </div>
@@ -116,19 +122,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
-                                        <h6 class="m-0 fw-bold">Tags</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="form-group demo-tagsinput-area">
-                                            <div class="form-line">
-                                                <input type="text" class="form-control" data-role="tagsinput">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                </div> {% endcomment %}
                                 {% for p in product%}
                                 <div class="card mb-3">
                                     <div class="card-header py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
@@ -136,9 +130,9 @@
                                     </div>
                                     <div class="card-body">
                                         <label  class="form-label">Categories Select</label>
-                                        <select class="form-select" size="3" aria-label="size 3 select example">
+                                        <select name="product_category" class="form-select" size="3" aria-label="size 3 select example">
                                             {% for category in categories%}
-                                            <option value="{{forloop.counter}}" {% if p.itmclass|lower == category.itmclass|lower %}selected{% endif %}>{{category.classname}}</option>
+                                            <option value="{{category.id}}" {% if p.itmclass|lower == category.itmclass|lower %}selected{% endif %}>{{category.classname}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -149,9 +143,9 @@
                                     </div>
                                     <div class="card-body">
                                         <label  class="form-label">Sub Categories Select</label>
-                                        <select class="form-select" size="3" aria-label="size 3 select example">
+                                        <select name="product_subcategory" class="form-select" size="3" aria-label="size 3 select example">
                                             {% for scategory in sub_categories%}
-                                            <option value="{{forloop.counter}}" {%if p.itmsubclass|lower == scategory.itmsubclass|lower%}selected{%endif%}>{{scategory.classname}}</option>
+                                            <option value="{{scategory.id}}" {%if p.itmsubclass|lower == scategory.itmsubclass|lower%}selected{%endif%}>{{scategory.classname}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -163,12 +157,12 @@
                                     <div class="card-body">
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-12">
-                                                <label  class="form-label">SKU Number</label>
-                                                <input type="text" value="{{product.itmclass}}" class="form-control">
+                                                <label  class="form-label">SKU Number (if any)</label>
+                                                <input name="product_sku" type="text" value="{{p.sku_no}}" class="form-control">
                                             </div>
                                             <div class="col-md-12">
-                                                <label  class="form-label">Tag Number</label>
-                                                <input type="text" class="form-control">
+                                                <label  class="form-label">Tag Number (if any)</label>
+                                                <input name="product_tag" type="text" value="{{p.itm_tags}}" class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -181,26 +175,26 @@
                                     <h6 class="mb-0 fw-bold ">Basic information</h6>
                                 </div>
                                 <div class="card-body">
-                                    <form>
+                                    
                                         
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-6">
                                                 <label  class="form-label">Name</label>
-                                                <input type="text" value="{{p.itmname}}" class="form-control">
+                                                <input name="product_name" type="text" value="{{p.itmname}}" class="form-control product-name">
                                             </div>
                                             <div class="col-md-6">
                                                 <label  class="form-label">Product Title</label>
-                                                <input type="text" value="{{p.itmtitle}}" class="form-control">
+                                                <input  name="product_title" type="text" value="{{p.itmtitle}}" class="form-control">
                                             </div>
                                             <div class="col-md-12">
                                                 <label class="form-label">Product Description</label>
                                                 <div  id="editor">
-                                                    <textarea type="text" class="form-control">{{p.itmdesc}}</textarea>
+                                                    <textarea name="product_desc" type="text" class="form-control">{{p.itmdesc}}</textarea>
                                                 </div>
                                             </div>
                                         </div>
                                         {% endfor %}
-                                    </form>
+                                   
                                 </div>
                             </div>
 
@@ -209,7 +203,7 @@
                                     <h6 class="mb-0 fw-bold ">Meta information</h6>
                                 </div>
                                 <div class="card-body">
-                                    <form>
+                                    
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-6">
                                                 <label  class="form-label">Link</label>
@@ -226,16 +220,22 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+                                    
                                 </div>
                             </div>
 
                             <div class="card mb-3">
-                                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
+                                <div class="card-header d-flex py-3 d-flex bg-transparent border-bottom-0">
+                                    <div class="p-2" style="margin-right:auto;">
                                     <h6 class="mb-0 fw-bold ">Product Variants</h6>
+                                    </div>
+                                    <div class="d-flex p-2">
+                                    <button class="btn btn-primary btn-sm" id="addRowBtn">+ Add</button>
+                                    </div>
+                                    
                                 </div>
                                 <div class="card-body">
-                                    <form>
+                                    
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-12">
                                                 <div class="product-cart">
@@ -251,35 +251,39 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                            {% for pro_var in variants%}
-                                                            {% if pro_var.is_active%}
+                                                            <form method="post">
+                                                                {% csrf_token %}
+                                                                {% for pro_var in variants%}
                                                                 <tr>
                                                                     <td>
-                                                                        <input type="text" value="{{pro_var.varient_name}}"  class="form-control" placeholder="Product tag name">
+                                                                        <input type="text" value="{{pro_var.varient_name}}"  class="varient-name form-control" placeholder="Varient name">
+
                                                                     </td>
                                                                     <td>
-                                                                        <input type="color" value="{{pro_var.color_code}}" class="form-control">
+                                                                        <input type="color" value="{{pro_var.color_code}}" class="color-code form-control">
                                                                     </td>
                                                                     <td>
-                                                                        <div class="product-quantity d-inline-flex">
-                                                                            <input type="number" value="{{pro_var.quantity}}">
-                                                                        </div>
+                                                                            <input type="number" value="{{pro_var.quantity}}"  class="quantity form-control" placeholder="Varient name">
                                                                     </td>
                                                                     <td>
                                                                         <div class="btn-group" role="group" aria-label="Basic outlined example">
-                                                                            <button type="button" class="btn btn-outline-secondary deleterow"><i class="icofont-ui-delete text-danger"></i></button>
+
+                                                                            <button type="button" class="btn btn-outline-secondary updaterow" data-variant-id="{{pro_var.id}}"><i class="icofont-ui-file text-danger"></i></button>
+
+                                                                            <a href="/delete_variant/{{pro_var.id}}" type="button" class="btn btn-outline-secondary deleterow"><i class="icofont-ui-delete text-danger"></i></a>
+                                                                            
                                                                         </div>
                                                                     </td>
                                                                 </tr>
+                                                            </form>
                                                             </tbody>
-                                                            {%endif%}
                                                         {% endfor %}
                                                         </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+                                    
                                 </div>
                             </div>
                             <div class="card mb-3">
@@ -287,7 +291,7 @@
                                     <h6 class="mb-0 fw-bold ">Images</h6>
                                 </div>
                                 <div class="card-body">
-                                    <form>
+                                    
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-12">
                                                 <label class="form-label">Product Images Upload</label>
@@ -303,62 +307,62 @@
                                                                     <div class="product-details-image mt-50">
                                                                         <div class="product-thumb-image">
                                                                             <div class="product-thumb-image-active nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                                                                <a class="single-thumb" id="v-pills-one-tab" data-bs-toggle="pill" href="#v-pills-one" role="button" aria-controls="v-pills-one" >
-                                                                                    <img src={% if p.product_images.image1%}"/{{p.product_images.image1}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                <a class="single-thumb" id="v-pills-one-tab" data-bs-toggle="pill" href="#v-pills-1" role="button" aria-controls="v-pills-one" >
+                                                                                    <img id="pillimage1" src={% if p.product_images.image1%}"/{{p.product_images.image1}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
                                                                                 </a>
-                                                                                <a class="single-thumb" id="v-pills-two-tab" data-bs-toggle="pill" href="#v-pills-two" role="button" aria-controls="v-pills-two">
-                                                                                    <img src={% if p.product_images.image2%}"/{{p.product_images.image2}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                <a class="single-thumb" id="v-pills-two-tab" data-bs-toggle="pill" href="#v-pills-2" role="button" aria-controls="v-pills-two">
+                                                                                    <img id="pillimage2" src={% if p.product_images.image2%}"/{{p.product_images.image2}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
                                                                                 </a>
-                                                                                <a class="single-thumb active" aria-current="page" id="v-pills-three-tab" data-bs-toggle="pill" role="button" href="#v-pills-three"  aria-controls="v-pills-three">
-                                                                                    <img src={% if p.product_images.image3%}"/{{p.product_images.image3}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                <a class="single-thumb active" aria-current="page" id="v-pills-three-tab" data-bs-toggle="pill" role="button" href="#v-pills-3"  aria-controls="v-pills-three">
+                                                                                    <img id="pillimage3" src={% if p.product_images.image3%}"/{{p.product_images.image3}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
                                                                                 </a>
-                                                                                <a class="single-thumb" id="v-pills-four-tab" data-bs-toggle="pill" href="#v-pills-four" role="button" aria-controls="v-pills-four">
-                                                                                    <img src={% if p.product_images.image4%}"/{{p.product_images.image4}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                <a class="single-thumb" id="v-pills-four-tab" data-bs-toggle="pill" href="#v-pills-4" role="button" aria-controls="v-pills-four">
+                                                                                    <img id="pillimage4" src={% if p.product_images.image4%}"/{{p.product_images.image4}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
                                                                                 </a>
-                                                                                <a class="single-thumb" id="v-pills-five-tab" data-bs-toggle="pill" href="#v-pills-five"  role="button" aria-controls="v-pills-five">
-                                                                                    <img src={% if p.product_images.image5%}"/{{p.product_images.image5}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
+                                                                                <a class="single-thumb" id="v-pills-five-tab" data-bs-toggle="pill" href="#v-pills-5"  role="button" aria-controls="v-pills-five">
+                                                                                    <img id="pillimage5" src={% if p.product_images.image5%}"/{{p.product_images.image5}}"{%else%}"{% static 'images/product/thunb-3.jpg'%}"{% endif %} alt="">
                                                                                 </a>
                                                                             </div>
                                                                         </div>
                                                                         <div class="product-image">
                                                                             <div class="product-image-active tab-content" id="v-pills-tabContent">
-                                                                                <a class="single-image tab-pane fade" id="v-pills-one" role="tabpanel" aria-labelledby="v-pills-one-tab">
+                                                                                <a class="single-image tab-pane fade" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-one-tab">
                                                                                     <div class="file-input-container">
                                                                                         <label for="image1" class="btn btn-primary">Update Image</label>
-                                                                                        <input type="file" name="image1" id="image" class="file-input" accept="image/*">
+                                                                                        <input type="file" name="image1" id="image1" class="file-input">
                                                                                     </div>
-                                                                                    <img id="previewImage" src={% if p.product_images.image1%}"/{{p.product_images.image1}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                    <img id="previewImage1" src={% if p.product_images.image1%}"/{{p.product_images.image1}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
                                                                                 </a>
 
-                                                                                <a class="single-image tab-pane fade" id="v-pills-two" role="tabpanel" aria-labelledby="v-pills-two-tab">
+                                                                                <a class="single-image tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-two-tab">
                                                                                     <div class="file-input-container">
                                                                                     <label for="image2" class="btn btn-primary">Update Image</label>
                                                                                     <input type="file" name="image2" id="image2" class="file-input" accept="image/*">
                                                                                     </div>
-                                                                                    <img src={% if p.product_images.image2%}"/{{p.product_images.image2}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                    <img id="previewImage2" src={% if p.product_images.image2%}"/{{p.product_images.image2}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
                                                                                 </a>
 
-                                                                                <a class="single-image tab-pane fade active show" id="v-pills-three" role="tabpanel" aria-labelledb
+                                                                                <a class="single-image tab-pane fade active show" id="v-pills-3" role="tabpanel" aria-labelledb
                                                                                 y="v-pills-three-tab">
                                                                                 <div class="file-input-container">
                                                                                     <label for="image3" class="btn btn-primary">Update Image</label>
                                                                                     <input type="file" name="image3" id="image3" class="file-input" accept="image/*">
                                                                                 </div>
-                                                                                    <img src={% if p.product_images.image3%}"/{{p.product_images.image3}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                    <img id="previewImage3" src={% if p.product_images.image3%}"/{{p.product_images.image3}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
                                                                                 </a>
-                                                                                <a class="single-image tab-pane fade" id="v-pills-four" role="tabpanel" aria-labelledby="v-pills-four-tab">
+                                                                                <a class="single-image tab-pane fade" id="v-pills-4" role="tabpanel" aria-labelledby="v-pills-four-tab">
                                                                                     <div class="file-input-container">
                                                                                         <label for="image4" class="btn btn-primary">Update Image</label>
                                                                                         <input type="file" name="image4" id="image4" class="file-input" accept="image/*">
                                                                                     </div>
-                                                                                    <img src={% if p.product_images.image4%}"/{{p.product_images.image4}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                    <img id="previewImage4" src={% if p.product_images.image4%}"/{{p.product_images.image4}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
                                                                                 </a>
-                                                                                <a class="single-image tab-pane fade " id="v-pills-five" role="tabpanel" aria-labelledby="v-pills-five-tab">
+                                                                                <a class="single-image tab-pane fade " id="v-pills-5" role="tabpanel" aria-labelledby="v-pills-five-tab">
                                                                                     <div class="file-input-container">
                                                                                         <label for="image" class="btn btn-primary">Update Image</label>
-                                                                                        <input type="file" name="image1" id="image" class="file-input" accept="image/*">
+                                                                                        <input type="file" name="image5" id="image5" class="file-input" accept="image/*">
                                                                                     </div>
-                                                                                    <img id="previewImage" src={% if p.product_images.image5%}"/{{p.product_images.image5}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
+                                                                                    <img id="previewImage5" src={% if p.product_images.image5%}"/{{p.product_images.image5}}"{%else%}"{%static 'images/product/productslide-2.jpg'%}"{% endif %} alt="">
                                                                                 </a>
                                                                             </div>
                                                                         </div>
@@ -372,40 +376,160 @@
 
                                             </div>
                                         </div>
-                                    </form>
+                                    
                                 </div>
                             </div>
 
 
                         </div>
                     </div><!-- Row end  --> 
-                    
+                </form>
                 </div>
             </div>    
         
 
-            <script src="http://pixelwibes.com/template/ebazar/html/js/template.js"></script>
+<script src="{% static 'js/template.js'%}"></script>
 <script>
-                // Get references to the file input and the image tag
-                var fileInput = document.getElementById('image');
-                var previewImage = document.getElementById('previewImage');
-            
-                // Add an event listener to the file input to detect changes
-                fileInput.addEventListener('change', function () {
-                    // Check if a file has been selected
-                    if (fileInput.files && fileInput.files[0]) {
-                        var reader = new FileReader();
-            
-                        // Set up the reader to read the selected file as a data URL
-                        reader.onload = function (e) {
-                            // Set the source of the preview image to the data URL
-                            previewImage.src = e.target.result;
-                        };
-            
-                        // Read the selected file as a data URL
-                        reader.readAsDataURL(fileInput.files[0]);
-                    }
-                });
+    var pills = document.querySelectorAll('.single-image');
+
+    pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+            var imageId = this.id.replace('v-pills-', '');
+            var fileInput = document.getElementById('image' + imageId);
+            var previewImage = document.getElementById('previewImage' + imageId);
+            var pillimage = document.getElementById('pillimage' + imageId);
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        pillimage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+            });
+        });
+    });
 </script>
 
-{% endblock content %}zˀ
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the button element
+        var addButton = document.getElementById("addRowBtn");
+
+        // Add click event listener to the button
+        addButton.addEventListener("click", function() {
+            // Create a new table row element
+            event.preventDefault();
+            var newRow = document.createElement("tr");
+
+            // HTML content for the new row
+            newRow.innerHTML = `
+            <tr>
+                <td>
+                    <input id="varient-name-new" type="text" value=""  class=" form-control" placeholder="Varient name">
+
+                </td>
+                <td>
+                    <input id="color-code-new" type="color" value="#ffffff" class="color-code-new form-control">
+                </td>
+                <td>
+                        <input id="variant_quantity" type="number" value=""  class="quantity-new form-control" placeholder="">
+                </td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Basic outlined example">
+
+                        <a onclick="add_varient()" id="addrow" type="button" class="btn btn-outline-secondary addrow" data-variant-id=""><i class="icofont-ui-file text-danger"></i></a>
+
+                        <button href="#" onclick="deleteRow(this)" type="button" class="btn btn-outline-secondary deleterow"><i class="icofont-ui-delete text-danger"></i></button>
+
+                    </div>
+                </td>
+            </tr>
+            `;
+
+            // Append the new row to the table
+            var tableBody = document.getElementById("myCartTable").querySelector("tbody");
+            tableBody.appendChild(newRow);
+        });
+    });
+
+    function deleteRow(btn) {
+        var row = btn.closest("tr");
+        row.parentNode.removeChild(row);
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+        function add_varient() {
+            var varientName = $('#varient-name-new').val();
+            var product_id = $('#pro_id').val();
+            var colorCode = $('#color-code-new').val();
+            var quantity = $('#variant_quantity').val();
+            var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+            
+            // Prepare form data
+            var formData = {
+                'csrfmiddlewaretoken': csrfToken,
+                'product_id':product_id,
+                'varient_name': varientName,
+                'color_code': colorCode,
+                'quantity': quantity
+            };
+
+            // Send AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/add_product_variant/' + product_id,
+                data: formData,
+                success: function(response) {
+                    // Handle success response
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error(xhr.responseText);
+                }
+            });
+        };
+
+    $(document).ready(function() {
+        $('.updaterow').click(function() {
+            var variantId = $(this).data('variant-id');
+            var varientName = $(this).closest('tr').find('.varient-name').val();
+            var colorCode = $(this).closest('tr').find('.color-code').val();
+            var quantity = $(this).closest('tr').find('.quantity').val();
+            console.log(quantity)
+            var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+            
+            // Prepare form data
+            var formData = {
+                'csrfmiddlewaretoken': csrfToken,
+                'variant_id': variantId,
+                'varient_name': varientName,
+                'color_code': colorCode,
+                'quantity': quantity
+            };
+
+            // Send AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/update_product_variant/',
+                data: formData,
+                success: function(response) {
+                    // Handle success response
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+    });
+</script>
+
+
+
+{% endblock content %}

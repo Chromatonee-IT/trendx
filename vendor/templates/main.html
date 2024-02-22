@@ -18,7 +18,7 @@
         <div class="sidebar px-4 py-4 py-md-4 me-0">
             <div class="d-flex flex-column h-100">
                 <a href="{% url 'v_dashboard'%}" class="mb-0 brand-icon">
-                    <img style="width:6rem" src="{% static 'images/logo_admin.gif'%}" class="logo-icon" alt="logo"/>
+                    <img style="width:6rem" src="{% static 'images/logo.svg'%}" class="logo-icon" alt="logo"/>
                 </a>
                 <!-- Menu: main ul -->
                 <ul class="menu-list flex-grow-1 mt-3">
@@ -48,8 +48,8 @@
                     </li>
 
                     <li class="collapsed">
-                        <a class="m-link {% if navbar == 'create_invoice' %} active {% endif %} " href="{% url 'create_invoice'%}">
-                        <i class="icofont-page fs-5"></i> <span>Create Invoices</span></a>
+                        <a class="m-link {% if navbar == 'create_invoice' %} active {% endif %} " href="{% url 'all_invoices'%}">
+                        <i class="icofont-page fs-5"></i> <span>All Invoices</span></a>
                     </li>
 
                     <li class="collapsed">

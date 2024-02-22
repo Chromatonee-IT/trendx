@@ -1233,14 +1233,14 @@ ul.categories-list li {
 		font-size: 11px!important;
 		overflow: hidden!important
 	}
-	.invoice footer {
+	/* .invoice footer {
 		position: absolute;
 		bottom: 10px;
 		page-break-after: always
-	}
-	.invoice>div:last-child {
+	} */
+	/* .invoice>div:last-child {
 		page-break-before: always
-	}
+	} */
 }
 .main-row {
 	height: 100vh

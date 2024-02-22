@@ -42,12 +42,12 @@
                                 <td>{{cupon.offer_cat}}</td>
                                 <td>{{cupon.start_date|date:"d-m-y"}}</td>
                                 <td>{{cupon.end_date|date:"d-m-y"}}</td>
-                                <td><span class="badge bg-success">Active</span></td>
+                                <td><span class="badge {% if cupon.is_active is True %}bg-success{% else%}bg-danger{% endif%}">{% if cupon.is_active is True %}Active{% else%}Inactive{% endif%}</span></td>
                                 <td>{{cupon.if_on_category}}</td>
                                 <td>
                                         <div class="btn-group" role="group" aria-label="Basic outlined example">
                                             <a href="/coupon_edit/{{cupon.id}}" class="btn btn-outline-secondary"><i class="icofont-edit text-success"></i></a>
-                                            <button type="button" class="btn btn-outline-secondary deleterow"><i class="icofont-ui-delete text-danger"></i></button>
+                                            <a href="/coupon_delete/{{cupon.id}}"type="button" class="btn btn-outline-secondary deleterow"><i class="icofont-ui-delete text-danger"></i></a>
                                         </div>
                                     </td>
                                 </tr>

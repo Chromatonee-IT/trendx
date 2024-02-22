@@ -100,6 +100,17 @@ class products(models.Model):
         else:
             average_rating = '0'
         return round(int(average_rating))
+    
+    @total_review.setter
+    def get_average_rating(self,value):
+        if reviews.objects.filter(product_id = self.id):
+            review_stats = reviews.objects.filter(product_id = self.id).aggregate(
+                average_rating=Avg('rating')
+            )
+            average_rating = review_stats['average_rating']
+        else:
+            average_rating = '0'
+        return round(int(average_rating))
 
 
 class product_images(models.Model):
