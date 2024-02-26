@@ -31,75 +31,103 @@ def dashboard(request):
 @vendor_requirded(login_url='v_login')
 def vendor_profile(request):
     user = request.user
-    address_ins = address.objects.get(isactive=True,username = user)
-    cust_ins = customer.objects.get(user=user)
-    store_ins = store_details.objects.get(store_vendor=user)
+    if address.objects.filter(isactive=True,username = user).exists():
+        address_ins = address.objects.get(isactive=True,username = user)
+    else:
+        address_ins = []
+    if customer.objects.filter(user=user).exists():
+        cust_ins = customer.objects.get(user=user)
+    else:
+        cust_ins = []
+    if store_details.objects.filter(store_vendor=user).exists():
+        store_ins = store_details.objects.get(store_vendor=user)
+    else:
+        store_ins = []
     if request.method=="POST":
         if 'profile_update' in request.POST:
-            name= request.POST.get('name')
-            birthday= request.POST.get('birthday')
-            user_email= request.POST.get('user_email')
-            user_phone= request.POST.get('user_phone')
-            abline1= request.POST.get('adrline1')
-            abline2= request.POST.get('adrline2')
-            abline3= request.POST.get('adrline3')
-            city= request.POST.get('city')
-            district= request.POST.get('district')
-            state= request.POST.get('state')
-            postal= request.POST.get('postal')
+            try:
+                name= request.POST.get('name')
+                birthday= request.POST.get('birthday')
+                user_email= request.POST.get('user_email')
+                user_phone= request.POST.get('user_phone')
+                abline1= request.POST.get('adrline1')
+                abline2= request.POST.get('adrline2')
+                abline3= request.POST.get('adrline3')
+                city= request.POST.get('city')
+                district= request.POST.get('district')
+                state= request.POST.get('state')
+                postal= request.POST.get('postal')
 
-            cust_ins.name = name
-            cust_ins.email = user_email
-            cust_ins.phone_number = user_phone
-            cust_ins.birthday = birthday
+                cust_ins.name = name
+                cust_ins.email = user_email
+                cust_ins.phone_number = user_phone
+                cust_ins.birthday = birthday
 
-            if 'profile_photo' in request.FILES:
-                cust_ins.cusstomer_image = request.FILES['profile_photo']
-            
+                if 'profile_photo' in request.FILES:
+                    cust_ins.cusstomer_image = request.FILES['profile_photo']
+                cust_ins.save()
 
-            address_ins.abline1 = abline1
-            address_ins.abline2 = abline2
-            address_ins.abline3 = abline3
-            address_ins.city = city
-            address_ins.district = district
-            address_ins.state = state
-            address_ins.zip = postal
-            cust_ins.save()
-            address_ins.save()
+                if not address.objects.filter(username=request.user):
+                    address.objects.create(username=request.user,name=name,email=user_email,phone=user_phone,abline1=abline1,abline2=abline2,abline3=abline3,city=city,state=state,zip=postal,isactive=True)
+                    messages.success(request,"Address added successfully.")
+                    return redirect('store_details')
+                elif address.objects.filter(name=name,zip=postal).exists():
+                    messages.error(request,"Address already exists!")
+                    return redirect('store_details')
+                else:
+                    address.objects.create(username=request.user,name=name,email=user_email,phone=user_phone,abline1=abline1,abline2=abline2,abline3=abline3,city=city,state=state,zip=postal)
 
-            return redirect('store_details')
+                return redirect('store_details')
+            except Exception as e:
+                messages.error(request,e)
+                return redirect('store_details')
         
         if 'store_update' in request.POST:
-            store_name= request.POST.get('store_name')
-            store_email= request.POST.get('store_email')
-            store_abline1= request.POST.get('store_abline1')
-            store_abline2= request.POST.get('store_abline2')
-            store_abline3= request.POST.get('store_abline3')
-            city= request.POST.get('city')
-            district= request.POST.get('district')
-            # state= request.POST.get('state')
-            zip= request.POST.get('zip')
-            store_facebook= request.POST.get('store_facebook')
-            store_instagram= request.POST.get('store_instagram')
-            store_twitter= request.POST.get('store_twitter')
+            try:
+                store_name= request.POST.get('store_name')
+                store_email= request.POST.get('store_email')
+                store_abline1= request.POST.get('store_abline1')
+                store_abline2= request.POST.get('store_abline2')
+                store_abline3= request.POST.get('store_abline3')
+                city= request.POST.get('city')
+                district= request.POST.get('district')
+                # state= request.POST.get('state')
+                zip= request.POST.get('zip')
+                store_facebook= request.POST.get('store_facebook')
+                store_instagram= request.POST.get('store_instagram')
+                store_twitter= request.POST.get('store_twitter')
+                if not store_details.objects.filter(store_vendor = request.user):
+                    store_details.objects.create(store_vendor = request.user,store_name=store_name,store_email=store_email,abline1=store_abline1,abline2=store_abline2,abline3=store_abline3,city=city,district=district,store_facebook=store_facebook,store_instagram=store_instagram,store_twitter=store_twitter,zip=zip,store_logo = request.FILES['store_logo'])
+                    messages.success(request,"Store created.")
+                    return redirect('store_details')
+                elif store_details.objects.filter(store_vendor = request.user).exists():
+                    store_ins.store_name=store_name
+                    store_ins.store_email=store_email
+                    store_ins.abline1=store_abline1
+                    store_ins.abline2=store_abline2
+                    store_ins.abline3=store_abline3
+                    store_ins.city=city
+                    store_ins.district=district
+                    # store_ins.state=state
+                    store_ins.store_facebook=store_facebook
+                    store_ins.store_instagram=store_instagram
+                    store_ins.store_twitter=store_twitter
+                    store_ins.zip=zip
+                    if 'store_logo' in request.FILES:
+                        store_ins.store_logo = request.FILES['store_logo']
+                    store_ins.save()
+                    messages.success(request,"Store details updated.")
+                    return redirect('store_details')
+                else:
+                    store_details.objects.create(store_vendor = request.user,store_name=store_name,store_email=store_email,abline1=store_abline1,abline2=store_abline2,abline3=store_abline3,city=city,district=district,store_facebook=store_facebook,store_instagram=store_instagram,store_twitter=store_twitter,zip=zip,store_logo = request.FILES['store_logo'])
+                    return redirect('store_details')
+            
+            except Exception as e:
+                print(e)
+                messages.success(request,e)
+                return redirect('store_details')
+        
 
-            store_ins.store_name=store_name
-            store_ins.store_email=store_email
-            store_ins.abline1=store_abline1
-            store_ins.abline2=store_abline2
-            store_ins.abline3=store_abline3
-            store_ins.city=city
-            store_ins.district=district
-            # store_ins.state=state
-            store_ins.store_facebook=store_facebook
-            store_ins.store_instagram=store_instagram
-            store_ins.store_twitter=store_twitter
-            store_ins.zip=zip
-            if 'store_logo' in request.FILES:
-                store_ins.store_logo = request.FILES['store_logo']
-            store_ins.save()
-            messages.success(request,"Store details updated.")
-            return redirect('store_details')
         if 'update_user' in request.POST:
             username= request.POST.get('username')
             password= request.POST.get('password')
@@ -113,7 +141,10 @@ def vendor_profile(request):
 
 
     cur_date = date.today() 
-    age = cur_date.year - cust_ins.birthday.year
+    if cust_ins.birthday is not None:
+        age = cur_date.year - cust_ins.birthday.year
+    else:
+        age = 'Please provide DOB'
     context={'navbar':'store_details','user':user,'address_ins':address_ins,'store_ins':store_ins,'age':age}
     return render(request,'vendor_profile.html',context)
 
@@ -229,7 +260,7 @@ def product_add(request):
         product_sku = request.POST.get('product_sku')
         product_tag = request.POST.get('product_tag')
 
-        if not products.objects.get(itmname=product_name,itmtitle=product_title,vendoraddedby = request.user.customer,itm_old_price=old_price,itm_new_price=new_price,sku_no=product_sku,itm_tags=product_tag):
+        if not products.objects.filter(itmname=product_name,itmtitle=product_title,vendoraddedby = request.user.customer,itm_old_price=old_price,itm_new_price=new_price,sku_no=product_sku,itm_tags=product_tag).exists():
             product.vendoraddedby = request.user.customer
             product.itmname=product_name
             product.itmtitle=product_title
@@ -520,10 +551,9 @@ def v_login(request):
             return redirect('v_login')
         if user.is_staff == True:
             login(request,user)
-
             return redirect('v_dashboard')
         else:
-            messages.error(request,"Enter correct credintials!")
+            messages.error(request,"You are not a verified vendor.")
             return redirect('v_login')
 
     context={}
@@ -563,7 +593,7 @@ def v_register(request):
             # Authenticate the user and log them in
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('admin_dashboard')
+            return redirect('v_dashboard')
         else:
             messages.error(request,"Kindly agree to the Terms & Conditions.")
             return redirect('v_register')

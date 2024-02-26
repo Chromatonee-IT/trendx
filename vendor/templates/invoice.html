@@ -18,6 +18,7 @@
             </div>
 
         <div class="row justify-content-center">
+            {% if invoice_list%}
             <div class="col-lg-12 col-md-12">
                 <div class="tab-content">
                     <div class="tab-pane active" id="Invoice-list">
@@ -64,7 +65,15 @@
                     </div> <!-- tab end  -->
                 </div>
             </div>
-
+            {% else %}
+            <div class="row g-3 mt-3"> 
+                <div  class="col-md-12">
+                    <div class="text-center"> 
+                        <h3 class="m-3">You don't have any order invoices yet.</h3>
+                    </div>
+                </div>
+            </div> <!-- Row end  -->
+            {% endif %}
         </div> <!-- Row end  -->
     </div>
 </div>

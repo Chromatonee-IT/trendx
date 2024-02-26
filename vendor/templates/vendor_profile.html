@@ -2,11 +2,6 @@
 {% load static %}
 
 {% block content%}
-
-
-
-
-
             <div class="body d-flex py-3">
                 <div class="container-xxl">
                     <div class="row align-items-center">
@@ -119,7 +114,7 @@
                                         <div class="col-md-12 col-sm-12">
                                         <div class="profile-block text-center mx-auto">
                                             <a href="#">
-                                                <img src="{{store_ins.store_logo.url}}" alt="" class="avatar xl rounded img-thumbnail shadow-sm" style="height: 200px;width: 200px;">
+                                                <img src="{% if store_ins.store_logo%}{{store_ins.store_logo.url}}{%else%}{% static 'images/store-logo.png'%}{%endif%}" alt="" class="avatar xl rounded img-thumbnail shadow-sm" style="height: 200px;width: 200px;">
                                             </a>
                                         </div>
                                          </div>
