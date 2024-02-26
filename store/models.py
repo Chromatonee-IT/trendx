@@ -11,7 +11,8 @@ class customer(models.Model):
     name = models.CharField(max_length=200, null=True)
     phone_number = models.CharField(max_length=15,null=True)
     email = models.EmailField(max_length=200, null=True)
-    cusstomer_image = models.ImageField(null=True,blank=True)
+    birthday = models.DateField(blank=True,null=True)
+    cusstomer_image = models.ImageField(upload_to='images/uploads/',null=True,blank=True)
     user_datecreated = models.DateTimeField(auto_now_add=True)
     user_dateupdated = models.DateTimeField(auto_now=True)
 
@@ -24,6 +25,31 @@ class customer(models.Model):
         for order in orders.objects.filter(cutomer_id = self.id):
             total += 1
         return total
+    
+class LastLogin(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    last_login_ip = models.GenericIPAddressField(null=True, blank=True)
+    last_login_timestamp = models.DateTimeField(auto_now=True) 
+
+
+class address(models.Model):
+    username = models.ForeignKey(User, on_delete=models.SET_NULL, null =True)
+    name = models.CharField(max_length=50, null= True)
+    email = models.CharField(max_length=50, null = True)
+    phone = models.IntegerField(null=True)
+    abline1 = models.CharField(max_length=200, null=True)
+    abline2 = models.CharField(max_length=200, null=True)
+    abline3 = models.CharField(max_length=200, null=True)
+    city = models.CharField(max_length=200, null=True)
+    district = models.CharField(max_length=200, null=True)
+    state = models.CharField(max_length=200, null=True)
+    country = models.CharField(max_length=200, null=True)
+    zip = models.IntegerField(null=False)
+    isactive = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
 
 class category(models.Model):
     itmclass = models.CharField(max_length=50,null=True)
@@ -151,7 +177,8 @@ class orders(models.Model):
     orderdate = models.DateTimeField(auto_now_add=True)
     shippeddate = models.DateTimeField(null=True)
     deliverydate = models.DateTimeField(null=True)
-    itemno = models.ManyToManyField(products)
+    items = models.ManyToManyField(products)
+    shipto = models.ForeignKey(address,on_delete=models.SET_NULL,null=True)
     cutomer_id = models.ForeignKey(customer,on_delete=models.SET_NULL, null=True)
     paymentid = models.CharField(max_length=50,null = False)
     order_dateupdated = models.DateTimeField(auto_now=True)
@@ -162,27 +189,32 @@ class orders(models.Model):
     @property
     def order_total(self):
         total = 0
-        for product in self.itemno.all():
+        for product in self.items.all():
             total += product.itm_new_price
         return total
     
-
-class address(models.Model):
-    username = models.ForeignKey(User, on_delete=models.SET_NULL, null =True)
-    name = models.CharField(max_length=50, null= True)
-    email = models.CharField(max_length=50, null = True)
-    phone = models.IntegerField(null=True)
-    abline1 = models.CharField(max_length=200, null=True)
-    abline2 = models.CharField(max_length=200, null=True)
-    abline3 = models.CharField(max_length=200, null=True)
-    city = models.CharField(max_length=200, null=True)
-    state = models.CharField(max_length=200, null=True)
-    country = models.CharField(max_length=200, null=True)
-    zip = models.IntegerField(null=False)
-    isactive = models.BooleanField(default=False)
+class orderitems(models.Model):
+    customer = models.ForeignKey(customer,on_delete=models.CASCADE)
+    order = models.ForeignKey(orders,on_delete=models.CASCADE)
+    product = models.ForeignKey(products,on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return str(self.order)
+    
+
+class order_invoices(models.Model):
+    order_id = models.ForeignKey(orders,on_delete=models.SET_NULL,null=True)
+    invoice_amount = models.IntegerField(null=True,blank=True)
+    invoice_date = models.DateTimeField(auto_now_add=True)
+    if_updated = models.DateTimeField(auto_now = True)
+
+    def __str__(self):
+        return str(self.id)
+
+
+
+
 
 class reviews(models.Model):
     username = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)

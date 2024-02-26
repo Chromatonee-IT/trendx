@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('admin_dashboard/',views.dashboard,name='v_dashboard'),
-    path('store_details/',views.store_detail,name='store_details'),
+    path('store_details/',views.vendor_profile,name='store_details'),
     path('products/',views.all_products,name='products'),
     path('orders_vendor/',views.all_orders,name='orders_vendor'),
     path('order_details/<int:id>',views.order_details,name='order_details'),
@@ -15,7 +15,7 @@ urlpatterns = [
     path('coupon_delete/<int:id>',views.coupon_delete,name='coupon_delete'),
     path('all_invoices/',views.all_invoices,name='all_invoices'),
     path('create_invoice/',views.create_invoice,name='create_invoice'),
-    path('update_invoice/',views.update_invoice,name='update_invoice'),
+    path('update_invoice/<int:id>',views.update_invoice,name='update_invoice'),
     path('all_report/',views.all_report,name='all_report'),
     path('help/',views.help,name='help'),
     path('product_add/',views.product_add,name='product_add'),
@@ -24,7 +24,9 @@ urlpatterns = [
     path('product_details/<str:id>',views.product_details,name='product_details'),
     path('delete_variant/<int:id>',views.delete_variant,name='delete_variant'),
     path('v_login/',views.v_login,name='v_login'),
+    path('v_register/',views.v_register,name='v_register'),
     path('vendor_logout/',views.vendor_logout,name='vendor_logout'),
     path('toggle-product/<int:product_id>/', views.toggle_product, name='toggle_product'),
     path('add_product_variant/<int:var_id>/', views.toggle_product, name='add_product_variant'),
+    path('generate_invoice/<int:id>', views.generate_invoice, name='generate_invoice'),
     ]

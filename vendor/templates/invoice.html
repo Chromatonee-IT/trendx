@@ -1,5 +1,5 @@
 {% extends "main.html" %}
-
+{% load static %}
 {% block content%}
 <div class="body d-flex py-lg-3 py-md-2">
     <div class="container-xxl">
@@ -23,162 +23,33 @@
                     <div class="tab-pane active" id="Invoice-list">
                         <div class="row justify-content-center">
                             <div class="col-lg-10 col-md-12">
+                            {% for invoice in invoice_list %}
                                 <div class="card mb-3">
                                     <div class="card-body d-sm-flex justify-content-between">
-                                        <a href="/update_invoice/" class="d-flex">
-                                            <img class="avatar rounded" src="assets/images/xs/avatar1.svg" alt="">
+                                        <a href="/update_invoice/{{invoice.id}}" class="d-flex">
+                                            <img class="avatar rounded" src="{% if invoice.order_id.cutomer_id.cusstomer_image%}{{invoice.order_id.cutomer_id.cusstomer_image.url}}{% else %} {% static 'images/profile_av.svg'%}{% endif %}" alt="">
                                             <div class="flex-fill ms-3 text-truncate">
-                                                <h6 class="d-flex justify-content-between mb-0"><span>Ryan MacLeod</span></h6>
-                                                <span class="text-muted">Ke Arrow Silicon</span>
+                                                <h6 class="d-flex justify-content-between mb-0"><span>Invoice Id: #{{invoice.id}}</span></h6>
+                                                <span class="text-muted">Order: #{{invoice.order_id}}, Name: {{invoice.order_id.cutomer_id}}</span>
                                             </div>
                                         </a>
                                         <div class="text-end d-none d-md-block">
-                                            <p class="mb-1"><i class="icofont-location-pin ps-1"></i> 2211 Jones Avenue,Winston Salem FL 27107</p>
-                                            <span class="text-muted"><i class="icofont-money ps-1"></i> $500</span>
+                                            <p class="mb-1"><i class="icofont-location-pin ps-1"></i>{{invoice.order_id.shipto.abline1}}, {{invoice.order_id.shipto.zip}}</p>
+                                            <span class="text-muted"><i class="icofont-money ps-1"></i> ${{invoice.order_id.order_total}}</span>
                                         </div>
                                     </div>
                                     <div class="card-footer justify-content-between d-flex align-items-center">
                                         <div class="d-none d-md-block">
                                             <strong>Date on:</strong>
-                                            <span>23 Feb, 2021</span>
+                                            <span>{{invoice.order_id.orderdate|date:"j M, Y"}}</span>
                                         </div>
                                         <div class="card-hover-show">
-                                            <a class="btn btn-sm btn-white border lift" href="#">Download</a>
+                                            <a class="btn btn-sm btn-white border lift" href="/generate_invoice/{{invoice.id}}">Download</a>
                                             <a class="btn btn-sm btn-white border lift" href="#">Send</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Delete</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-sm-flex justify-content-between">
-                                        <a href="javascript:void(0);" class="d-flex">
-                                            <img class="avatar rounded" src="assets/images/xs/avatar2.svg" alt="">
-                                            <div class="flex-fill ms-3 text-truncate">
-                                                <h6 class="d-flex justify-content-between mb-0"><span>Penelope Stewart</span></h6>
-                                                <span class="text-muted">Kronos Minimalist</span>
-                                            </div>
-                                        </a>
-                                        <div class="text-end d-none d-md-block">
-                                            <p class="mb-1"><i class="icofont-location-pin ps-1"></i> 3154  Sampson Street,Aurora CT 80014</p>
-                                            <span class="text-muted"><i class="icofont-money ps-1"></i> $433</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer justify-content-between d-flex align-items-center">
-                                        <div class="d-none d-md-block">
-                                            <strong>Date on:</strong>
-                                            <span>14 Apr, 2021</span>
-                                        </div>
-                                        <div class="card-hover-show">
-                                            <a class="btn btn-sm btn-white border lift" href="#">Download</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Send</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-sm-flex justify-content-between">
-                                        <a href="javascript:void(0);" class="d-flex">
-                                            <img class="avatar rounded" src="assets/images/xs/avatar3.svg" alt="">
-                                            <div class="flex-fill ms-3 text-truncate">
-                                                <h6 class="d-flex justify-content-between mb-0"><span>Diane	Slater</span></h6>
-                                                <span class="text-muted">Mechanical Watch</span>
-                                            </div>
-                                        </a>
-                                        <div class="text-end d-none d-md-block">
-                                            <p class="mb-1"><i class="icofont-location-pin ps-1"></i> 49 Stamford Road. West Chicago, IL 60185</p>
-                                            <span class="text-muted"><i class="icofont-money ps-1"></i> $255</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer justify-content-between d-flex align-items-center">
-                                        <div class="d-none d-md-block">
-                                            <strong>Date on:</strong>
-                                            <span>16 Mar, 2021</span>
-                                        </div>
-                                        <div class="card-hover-show">
-                                            <a class="btn btn-sm btn-white border lift" href="#">Download</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Send</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-sm-flex justify-content-between">
-                                        <a href="javascript:void(0);" class="d-flex">
-                                            <img class="avatar rounded" src="assets/images/xs/avatar4.svg" alt="">
-                                            <div class="flex-fill ms-3 text-truncate">
-                                                <h6 class="d-flex justify-content-between mb-0"><span>Amy Mills</span></h6>
-                                                <span class="text-muted">Engraved Black Alloy</span>
-                                            </div>
-                                        </a>
-                                        <div class="text-end d-none d-md-block">
-                                            <p class="mb-1"><i class="icofont-location-pin ps-1"></i> 2698  Northumberland. Melbourne, FL 32904</p>
-                                            <span class="text-muted"><i class="icofont-money ps-1"></i> $555</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer justify-content-between d-flex align-items-center">
-                                        <div class="d-none d-md-block">
-                                            <strong>Date on:</strong>
-                                            <span>17 Mar, 2021</span>
-                                        </div>
-                                        <div class="card-hover-show">
-                                            <a class="btn btn-sm btn-white border lift" href="#">Download</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Send</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-sm-flex justify-content-between">
-                                        <a href="javascript:void(0);" class="d-flex">
-                                            <img class="avatar rounded" src="assets/images/xs/avatar5.svg" alt="">
-                                            <div class="flex-fill ms-3 text-truncate">
-                                                <h6 class="d-flex justify-content-between mb-0"><span>Tim Mitchell</span></h6>
-                                                <span class="text-muted">Titan Workwear</span>
-                                            </div>
-                                        </a>
-                                        <div class="text-end d-none d-md-block">
-                                            <p class="mb-1"><i class="icofont-location-pin ps-1"></i> 35 Gubener Str. Emmering, FL 32904</p>
-                                            <span class="text-muted"><i class="icofont-money ps-1"></i> $288</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer justify-content-between d-flex align-items-center">
-                                        <div class="d-none d-md-block">
-                                            <strong>Date on:</strong>
-                                            <span>12 Feb, 2021</span>
-                                        </div>
-                                        <div class="card-hover-show">
-                                            <a class="btn btn-sm btn-white border lift" href="#">Download</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Send</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card mb-3">
-                                    <div class="card-body d-sm-flex justify-content-between">
-                                        <a href="javascript:void(0);" class="d-flex">
-                                            <img class="avatar rounded" src="assets/images/xs/avatar2.svg" alt="">
-                                            <div class="flex-fill ms-3 text-truncate">
-                                                <h6 class="d-flex justify-content-between mb-0"><span>Brian Swader</span></h6>
-                                                <span class="text-muted">NoiseFit Endure</span>
-                                            </div>
-                                        </a>
-                                        <div class="text-end d-none d-md-block">
-                                            <p class="mb-1"><i class="icofont-location-pin ps-1"></i> 70 Bowman St. South Windsor, CT 06074</p>
-                                            <span class="text-muted"><i class="icofont-money ps-1"></i> $655</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer justify-content-between d-flex align-items-center">
-                                        <div class="d-none d-md-block">
-                                            <strong>Date on:</strong>
-                                            <span>18 Feb, 2020</span>
-                                        </div>
-                                        <div class="card-hover-show">
-                                            <a class="btn btn-sm btn-white border lift" href="#">Download</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Send</a>
-                                            <a class="btn btn-sm btn-white border lift" href="#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
+                            {% endfor %}
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination mt-4">
                                         <li class="page-item"><a class="page-link" href="#">Previous</a></li>

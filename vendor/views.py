@@ -1,5 +1,6 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponse
 from store.models import *
+from .models import *
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
@@ -7,6 +8,11 @@ from django.db.models import Count, Avg, Sum
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator,Page,PageNotAnInteger,EmptyPage
 from django.http import JsonResponse
+from datetime import date
+from io import BytesIO
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.contrib import messages
 
 
 @csrf_exempt
@@ -23,9 +29,94 @@ def dashboard(request):
     return render(request,'dashboard.html',context)
 
 @vendor_requirded(login_url='v_login')
-def store_detail(request):
-    context={'navbar':'store_details'}
-    return render(request,'store_details.html',context)
+def vendor_profile(request):
+    user = request.user
+    address_ins = address.objects.get(isactive=True,username = user)
+    cust_ins = customer.objects.get(user=user)
+    store_ins = store_details.objects.get(store_vendor=user)
+    if request.method=="POST":
+        if 'profile_update' in request.POST:
+            name= request.POST.get('name')
+            birthday= request.POST.get('birthday')
+            user_email= request.POST.get('user_email')
+            user_phone= request.POST.get('user_phone')
+            abline1= request.POST.get('adrline1')
+            abline2= request.POST.get('adrline2')
+            abline3= request.POST.get('adrline3')
+            city= request.POST.get('city')
+            district= request.POST.get('district')
+            state= request.POST.get('state')
+            postal= request.POST.get('postal')
+
+            cust_ins.name = name
+            cust_ins.email = user_email
+            cust_ins.phone_number = user_phone
+            cust_ins.birthday = birthday
+
+            if 'profile_photo' in request.FILES:
+                cust_ins.cusstomer_image = request.FILES['profile_photo']
+            
+
+            address_ins.abline1 = abline1
+            address_ins.abline2 = abline2
+            address_ins.abline3 = abline3
+            address_ins.city = city
+            address_ins.district = district
+            address_ins.state = state
+            address_ins.zip = postal
+            cust_ins.save()
+            address_ins.save()
+
+            return redirect('store_details')
+        
+        if 'store_update' in request.POST:
+            store_name= request.POST.get('store_name')
+            store_email= request.POST.get('store_email')
+            store_abline1= request.POST.get('store_abline1')
+            store_abline2= request.POST.get('store_abline2')
+            store_abline3= request.POST.get('store_abline3')
+            city= request.POST.get('city')
+            district= request.POST.get('district')
+            # state= request.POST.get('state')
+            zip= request.POST.get('zip')
+            store_facebook= request.POST.get('store_facebook')
+            store_instagram= request.POST.get('store_instagram')
+            store_twitter= request.POST.get('store_twitter')
+
+            store_ins.store_name=store_name
+            store_ins.store_email=store_email
+            store_ins.abline1=store_abline1
+            store_ins.abline2=store_abline2
+            store_ins.abline3=store_abline3
+            store_ins.city=city
+            store_ins.district=district
+            # store_ins.state=state
+            store_ins.store_facebook=store_facebook
+            store_ins.store_instagram=store_instagram
+            store_ins.store_twitter=store_twitter
+            store_ins.zip=zip
+            if 'store_logo' in request.FILES:
+                store_ins.store_logo = request.FILES['store_logo']
+            store_ins.save()
+            messages.success(request,"Store details updated.")
+            return redirect('store_details')
+        if 'update_user' in request.POST:
+            username= request.POST.get('username')
+            password= request.POST.get('password')
+            user = User.objects.filter(username=username).first()
+            print(user)
+            user.set_password(password)
+            user.save()
+            messages.success(request,"Login credentials changed.")
+            return redirect('v_login')
+
+
+
+    cur_date = date.today() 
+    age = cur_date.year - cust_ins.birthday.year
+    context={'navbar':'store_details','user':user,'address_ins':address_ins,'store_ins':store_ins,'age':age}
+    return render(request,'vendor_profile.html',context)
+
 
 @vendor_requirded(login_url='v_login')
 def all_products(request):
@@ -365,14 +456,46 @@ def create_invoice(request):
 
 
 @vendor_requirded(login_url='v_login')
-def update_invoice(request):
-    context={'navbar':'create_invoice'}
+def update_invoice(request,id):
+    invoice_ins = order_invoices.objects.get(id=id)
+    vendor_ins = User.objects.get(id=invoice_ins.order_id.vendor_id.store_vendor.id)
+    context={'navbar':'create_invoice','invoice_ins':invoice_ins,'vendor_ins':vendor_ins}
     return render(request,'update_invoice.html',context)
 
 @vendor_requirded(login_url='v_login')
 def all_invoices(request):
-    context={'navbar':'create_invoice'}
+    order_list = orders.objects.filter(vendor_id = request.user.id)
+    invoice_list = []
+    for order in order_list:
+        invoices = order_invoices.objects.get(order_id = order)
+        invoice_list.append(invoices)
+    context={'navbar':'create_invoice','invoice_list':invoice_list}
     return render(request,'invoice.html',context)
+
+
+def render_to_pdf(template,data={}):
+    template = get_template(template)
+    html = template.render(data)
+    results = BytesIO()
+    pdf  = pisa.pisaDocument(html.encode("UTF-8"),results)
+    if not pdf.err:
+        return HttpResponse(results.getvalue(),content_type="application/pdf")
+    return None
+
+
+def generate_invoice(request,id):
+    try:
+        order_detail = orders.objects.get(id=id,vendor_id=request.user.id)
+    except:
+        return HttpResponse('Invoice Not Found')
+    data = {
+        'order_id':order_detail.id,
+        'name':order_detail.cutomer_id.name,
+        'paymentid':order_detail.paymentid,
+    }
+    pdf = render_to_pdf('generate_invoice.html',data)
+    return HttpResponse(pdf,content_type='application/pdf')
+    # return render(request,'generate_invoice.html')
 
 
 @vendor_requirded(login_url='v_login')
@@ -389,16 +512,65 @@ def v_login(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        user = authenticate(username = username, password=password)
+
+
+        user = authenticate(request,username = username, password=password)
+        if user is None:
+            messages.error(request,"Enter correct credintials!")
+            return redirect('v_login')
         if user.is_staff == True:
             login(request,user)
+
             return redirect('v_dashboard')
-        else: 
+        else:
+            messages.error(request,"Enter correct credintials!")
             return redirect('v_login')
 
     context={}
     return render(request,'v_login.html',context)
 
+@csrf_exempt
+def v_register(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        name = request.POST['name']
+        email = request.POST['email']
+        phone_number = request.POST['phone']
+        terms_and_conditions = request.POST.get('termsandconditions', False)
+        phone_number = request.POST.get('phone', '')
+
+        if len(phone_number) >= 10 and not phone_number.isdigit():
+            messages.error(request,"Phone number must be 10 digits!")
+            return redirect('v_register')
+        if terms_and_conditions:
+            if User.objects.filter(username=username).exists():
+                messages.info(request,"Username already exists!")
+                return redirect('v_register')
+            if User.objects.filter(email=email).exists():
+                messages.info(request,"Email already exists!")
+                return redirect('v_register')
+            if customer.objects.filter(phone_number=phone_number):
+                messages.info(request,"Phone Number already exists!")
+                return redirect('v_register')
+            # Create a new user
+            user = User.objects.create_user(username=username, password=password)
+            user.first_name = name
+            user.email = email
+            user.save()
+            # Create a user profile
+            customer.objects.create(user=user, name = username, email=email, phone_number=phone_number)
+            # Authenticate the user and log them in
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('admin_dashboard')
+        else:
+            messages.error(request,"Kindly agree to the Terms & Conditions.")
+            return redirect('v_register')
+
+    context={}
+    return render(request,'v_register.html',context)
+
 def vendor_logout(request):
     logout(request)
-    return redirect('v_dashboard')
+    return redirect('v_login')

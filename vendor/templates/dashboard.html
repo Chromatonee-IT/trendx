@@ -227,7 +227,8 @@ dmeondindinejdbjeubujbd
                         {% for product in products%}
                             <tr>
                                 <td><strong>{{product.id}}</strong></td>
-                                <td><img style="object-fit: contain;" src="{{product.product_images.image1.url}}" class="avatar lg rounded me-2" alt="profile-image"><span></span></td>
+                                <td><img style="object-fit: contain; mix-blend-mode: darken;
+                                    " src="{{product.product_images.image1.url}}" class="avatar lg rounded me-2" alt="profile-image"><span></span></td>
                                 <td><a href="/product_details/{{product.id}}"><h6 class="mb-3 fw-bold">{{product.itmname}}<span class="text-muted small fw-light d-block">Product Id: #{{product.id}}</span></h6></a></td>
                                 <td>0</td>
                                 <td>{{product.total_review}}</td>

@@ -6,12 +6,21 @@ from store.models import *
 class store_details(models.Model):
     store_vendor = models.ForeignKey(User, on_delete=models.SET_NULL,null = True)
     store_name = models.CharField(max_length=50)
-    store_username = models.CharField(max_length=50)
+    store_email = models.CharField(max_length=100,null=True,blank=True)
     store_logo = models.ImageField(upload_to='uploads/', height_field=None, width_field=None, max_length=None,null=True,blank = True)
-    store_images = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None,null=True, blank = True)
-    store_date_created = models.DateTimeField(auto_now=True,)
+    abline1 = models.CharField(max_length=200, null=True)
+    abline2 = models.CharField(max_length=200, null=True)
+    abline3 = models.CharField(max_length=200,blank=True ,null=True)
+    city = models.CharField(max_length=200, null=True)
+    district = models.CharField(max_length=200, null=True)
+    state = models.CharField(max_length=200, null=True)
+    zip = models.IntegerField(null=False,default=000000)
+    store_facebook = models.CharField(max_length=100,null=True,blank=True)
+    store_instagram = models.CharField(max_length=100,null=True,blank=True)
+    store_twitter = models.CharField(max_length=100,null=True,blank=True)
+    store_date_created = models.DateTimeField(auto_now=True)
     store_date_updated = models.DateTimeField(auto_now_add = True,null=True)
 
     def __str__(self):
-        return str(self.store_username)
+        return str(self.store_name)
     
