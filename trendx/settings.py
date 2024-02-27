@@ -19,7 +19,7 @@ MESSAGE_TAGS = {
 SECRET_KEY = '()6f$@712andea35dnw^kmaps8u%kc))p%%^%3i+3h6*hob)wq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
