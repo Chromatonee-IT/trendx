@@ -16,6 +16,7 @@
                     </div>
                 </div>
             </div>
+        {% if cupons%}     
         </div> <!-- Row end  -->
         <div class="row clearfix g-3">
         <div class="col-sm-12">
@@ -38,7 +39,7 @@
                             {% for cupon in cupons%}
                                 <tr>
                                 <td><span class="fw-bold ms-1">{{cupon.offer}}</span></td>
-                                <td>{{cupon.discount_value}}</td>
+                                <td>{% if cupon.discount_value%}{{cupon.discount_value}}{% else %} None{% endif %}</td>
                                 <td>{{cupon.offer_cat}}</td>
                                 <td>{{cupon.start_date|date:"d-m-y"}}</td>
                                 <td>{{cupon.end_date|date:"d-m-y"}}</td>
@@ -58,6 +59,15 @@
                 </div>
         </div>
         </div><!-- Row End -->
+        {% else %}
+        <div class="row g-3 mt-3"> 
+            <div  class="col-md-12">
+                <div class=" text-center"> 
+                    <h3 class="m-3">You don't have any discount coupons.</h3>
+                </div>
+            </div>
+        </div> <!-- Row end  -->
+        {% endif %}
     </div>
 </div>
 {% endblock content%}

@@ -14,6 +14,7 @@
                 </div>
             </div>
         </div> <!-- Row end  -->
+        {% if order_list%}
         <div class="row g-3 mb-3"> 
             <div class="col-md-12">
                 <div class="card"> 
@@ -57,6 +58,15 @@
                 </div>
             </div>
         </div> <!-- Row end  -->
+        {% else %}
+        <div class="row g-3 mt-3"> 
+            <div  class="col-md-12">
+                <div class=" text-center"> 
+                    <h3 class="m-3">You don't have any orders.</h3>
+                </div>
+            </div>
+        </div> <!-- Row end  -->
+        {% endif %}
     </div>
 </div>
 {% endblock content%}

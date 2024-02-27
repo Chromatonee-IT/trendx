@@ -10,8 +10,20 @@
             <div class="border-0 mb-4">
                 <div class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap">
                     <h3 class="fw-bold mb-0">Coupons Edit</h3>
+                    <div class="d-flex justify-content-center">
+                        {% if messages%}{% for message in messages%}
+                        <div class="alert {{message.tags}} fade show" id="alert-box">
+                            <div class="d-flex align-items-center">
+                                <i class='bx bx-info-circle fs-5 m-2'></i>
+                            {{message}}
+                            {% endfor %}
+                            </div>
+                          </div>
+                        {% endif %}
+                    </div>
                     <button type="submit" class="btn btn-primary btn-set-task w-sm-100 text-uppercase px-5">Save</button>
                 </div>
+                
             </div>
         </div> <!-- Row end  -->
         <div class="row clearfix g-3">
@@ -84,7 +96,7 @@
                                 <div class="col-md-12">
                                     <label class="form-label">Coupons Types</label>
                                     <div class="form-check">
-                                        <input class="form-check-input" value=3 type="radio" name="couponstype" {% if coupon.offer_cat.id == 3%}checked{% endif %}>
+                                        <input class="form-check-input" value=1 type="radio" name="couponstype" {% if coupon.offer_cat.id == 1%}checked{% endif %}>
                                         <label class="form-check-label">
                                             Free Shipping
                                         </label>
@@ -96,7 +108,7 @@
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" value=1 type="radio" name="couponstype" {% if coupon.offer_cat.id == 1%}checked{% endif %}>
+                                        <input class="form-check-input" value=3 type="radio" name="couponstype" {% if coupon.offer_cat.id == 3%}checked{% endif %}>
                                         <label class="form-check-label">
                                             Fixed Amount
                                         </label>
@@ -116,4 +128,12 @@
 </form>
 </div>
 {% endfor %}
+
+
+<script>
+    function hide_alert(){
+        document.getElementById("alert-box").style.display="None";
+       }
+       setTimeout(hide_alert,5000);
+</script>
 {% endblock content%}

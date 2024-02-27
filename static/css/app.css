@@ -1229,19 +1229,55 @@ ul.categories-list li {
 	padding: 8px 0
 }
 @media print {
-	.invoice {
-		font-size: 11px!important;
-		overflow: hidden!important
-	}
-	/* .invoice footer {
-		position: absolute;
-		bottom: 10px;
-		page-break-after: always
-	} */
-	/* .invoice>div:last-child {
-		page-break-before: always
-	} */
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    
+    body {
+        margin: 0;
+    }
+
+    .card-body.print_invoice {
+        position: relative; /* Ensure relative positioning for absolute elements inside */
+        padding-top: 3cm; /* Adjust as needed for your header */
+    }
+
+    /* Ensure header sticks to the top */
+    .mb-3.pb-3.border-bottom {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background-color: #fff; /* Adjust as needed */
+        padding: 10px;
+    }
+
+    /* Ensure footer sticks to the bottom */
+    .col-lg-12.text-end {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff; /* Adjust as needed */
+        padding: 10px;
+    }
+
+    /* Adjust font size and overflow for better printing */
+    .invoice {
+        font-size: 11px !important;
+        overflow: hidden !important;
+    }
+
+    /* Uncomment if you want to ensure footer at the end of each page */
+    /* .invoice footer {
+        position: absolute;
+        bottom: 10px;
+        page-break-after: always;
+    } */
+    /* .invoice>div:last-child {
+        page-break-before: always;
+    } */
 }
+
 .main-row {
 	height: 100vh
 }

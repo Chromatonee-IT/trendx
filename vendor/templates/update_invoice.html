@@ -1,19 +1,81 @@
 {% extends 'main.html'%}
 {% load static %}
 {% block content%}
+<style>
+        
+  @page{
+      size: a4 portrait;
+  }
+
+  body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+  }
+  .container {
+      margin: 0 auto;
+      padding: 5px;
+  }
+  h1 {
+      text-align: center;
+  }
+  table {
+      width: 100%;
+      border: none;
+      {% comment %} border-collapse: collapse; {% endcomment %}
+      margin-top: 20px;
+  }
+  th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+  }
+  th {
+      background-color: #f2f2f2;
+  }
+  td {
+      background-color: #ffffff;
+      text-align: center;
+  }
+  .invoice-total {
+      margin-top: 10px;
+      text-align: right;
+  }
+  .header {
+      margin-bottom: 20px;
+  }
+  .invoice-img {
+      text-align: right; 
+      zoom: 35%;
+    }
+
+  /* Page-specific styles */
+  @page {
+      size: letter portrait;
+      margin: 50px;
+      @frame footer {
+          -pdf-frame-content: footer;
+          bottom: 2cm;
+          margin-left: 1cm;
+          margin-right: 1cm;
+          height: 1cm;
+      }
+  }
+  
+  #footer {
+      position: absolute;
+      text-align: center;
+      padding: 5px;
+      line-height: 1;
+  }
+  
+</style>
 <div class="body d-flex py-lg-3 py-md-2">
     <div class="container-xxl">
         
         <div class="row align-items-center">
             <div class="border-0 mb-4">
                 <div class="card-header no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap">
-                    <h3 class="fw-bold mb-0 py-3 pb-2">Invoices</h3>
-                    <div class="col-auto py-2 w-sm-100">
-                        <ul class="nav nav-tabs tab-body-header rounded invoice-set" role="tablist">
-                            <li class="nav-item"><a class="nav-link  active" data-bs-toggle="tab" href="#Invoice-Simple" role="tab">Details invoice</a></li>
-                            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#Invoice-Email" role="tab">Email invoice</a></li>
-                        </ul>
-                    </div>
+                    <h3 class="fw-bold mb-0 py-3 pb-2">Invoice Details</h3>
                 </div>
             </div>
         </div> <!-- Row end  -->
@@ -24,238 +86,89 @@
                     <div class="tab-pane fade show active" id="Invoice-Simple">
                         <div class="row justify-content-center">
                             <div class="col-lg-8 col-md-12">
-                                <div class="card p-xl-5 p-lg-4 p-0">
-                                    <div class="card-body">
-                                        <div class="mb-3 pb-3 border-bottom">
-                                            Invoice
-                                            <strong>May 22, 2021</strong>
-                                            <span class="float-end"> <strong>transection id:</strong> #18414</span>
-                                        </div>
-
-                                        <div class="row mb-4">
-                                            <div class="col-sm-6">
-                                                <h6 class="mb-3">From:</h6>
-                                                <div><strong>eBazar Shop</strong></div>
-                                                <div>111  Berkeley Rd</div>
-                                                <div>STREET ON THE FOSSE, Poland</div>
-                                                <div>Email: info@ebazar.com</div>
-                                                <div>Phone: +44 888 666 3333</div>
-                                            </div>
-                                            
-                                            <div class="col-sm-6">
-                                                <h6 class="mb-3">To:</h6>
-                                                <div><strong>Dianalove</strong></div>
-                                                <div>45 Larissa Court</div>
-                                                <div>Victoria, BIRDWOODTON</div>
-                                                <div>Email: Dianalove@gmail.com</div>
-                                                <div>Phone: +66 243 456 789</div>
-                                            </div>
-                                        </div> <!-- Row end  -->
-                                        
-                                        <div class="table-responsive-sm">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center">#</th>
-                                                        <th>Item</th>
-                                                        <th>Description</th>
-                                                        <th class="text-end">Item Cost</th>
-                                                        <th class="text-center">Products Item</th>
-                                                        <th class="text-end">Total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="text-center">1</td>
-                                                        <td>Rado Watch</td>
-                                                        <td>Men Watch for Gold Color</td>
-                                                        <td class="text-end">$330.00</td>
-                                                        <td class="text-center">1</td>
-                                                        <td class="text-end">$330.00</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-        
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-5">
-                                            
-                                            </div>
-                                            
-                                            <div class="col-lg-4 col-sm-5 ms-auto">
-                                                <table class="table table-clear">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td ><strong>Subtotal</strong></td>
-                                                            <td class="text-end">$330.00</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td ><strong>Tax(18%)</strong></td>
-                                                            <td class="text-end">$59.4</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td ><strong>Total</strong></td>
-                                                            <td class="text-end"><strong>$389.00</strong></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div> <!-- Row end  -->
-        
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <h6>Terms &amp; Condition</h6>
-                                                <p class="text-muted">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over</p>
-                                            </div>
-                                            <div class="col-lg-12 text-end">
-                                                <button type="button" class="btn btn-outline-secondary btn-lg my-1"><i class="fa fa-print"></i> Print</button>
-                                                <button type="button" class="btn btn-primary btn-lg my-1"><i class="fa fa-paper-plane-o"></i> Send Invoice</button>
-                                            </div>
-                                        </div> <!-- Row end  -->
+                              <div class="card print_invoice p-4">
+                                <div class="header">
+                                  <h6 style="text-align:center;"><strong>Order Invoice</strong></h6>
+                                  <div class="container d-flex justify-centent-around">
+                                    <div class="container" style="text-align: left; padding-right:20px; width:100%;">
+                                      <strong>Order Id:</strong> #{{invoice_ins.order_id}}<br />
+                                                    <strong>Vendor:</strong> {{invoice_ins.order_id.vendor_id}}<br />
+                                                    <strong>Address:<br/>
+                                                    </strong>{{invoice_ins.order_id.vendor_id.abline1}}<br/>
+                                                  </strong>{{invoice_ins.order_id.vendor_id.abline2}}<br/>
+                                                    </strong>{{invoice_ins.order_id.vendor_id.city}}, {{invoice_ins.order_id.vendor_id.zip}}<br/>
+                                                    <strong>Email:</strong> {{vendor_ins.customer.email}}<br/>
+                                                    <strong>Phone:</strong>{{vendor_ins.customer.phone_number}}<br/>
                                     </div>
-                                </div>
-                            </div>
-                        </div> <!-- Row end  -->
-                    </div> <!-- tab end  -->
-                    <div class="tab-pane fade" id="Invoice-Email">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="body d-flex py-lg-3 py-md-2">
-                                    <div class="container-xxl">
-                                        <div class="row align-items-center">
-                                            <div class="border-0 mb-4">
-                                            </div>
-                                        </div> <!-- Row end  -->
-                                        <div class="row g-3">
-                                            <div class="col-12">
-                                                    <h5 class="card-title mb-0 fw-bold">Update Invoice</h5>
-                                              <div class="card print_invoice">
-                                                <div class="card-body">
-                                                  <div class="card p-3">
-                                                    <div class="border-bottom pb-2">
-                                                      <textarea class="form-control address">Jone Martin,
-                        2838 Oliverio Drive
-                        Allen, Kansas 66833
-                        Phone: (620) 528-2614
-                                                      </textarea>
-                                                      <div id="logo">
-                                                        <div id="logoctr">
-                                                          <a href="javascript:;" id="change-logo" title="Change logo">Change Logo</a>
-                                                          <a href="javascript:;" id="save-logo" title="Save changes">Save</a> | <a href="javascript:;" id="delete-logo" title="Delete logo">Delete Logo</a>
-                                                          <a href="javascript:;" id="cancel-logo" title="Cancel changes">Cancel</a>
-                                                        </div>
-                                                        <div id="logohelp">
-                                                          <input id="imageloc" type="text" size="50" value=""><br> (max width: 540px, max height: 100px)
-                                                        </div>
-                                                        <img id="image" src="assets/images/logo.svg" alt="logo" width="100">
-                                                      </div>
-                                                    </div>
-                                                    <div style="clear:both"></div>
-                                                    <div class="customer mt-4">
-                                                      <textarea class="form-control customer-title">Widget Catalog</textarea>
-                                                      <table class="meta">
-                                                        <tbody>
-                                                          <tr>
-                                                            <td class="meta-head">Invoice #</td>
-                                                            <td><textarea class="form-control">000123</textarea></td>
-                                                          </tr>
-                                                          <tr>
-                                                            <td class="meta-head">Date</td>
-                                                            <td><textarea class="form-control" id="date">October 18, 2022</textarea></td>
-                                                          </tr>
-                                                          <tr>
-                                                            <td class="meta-head">Amount Due</td>
-                                                            <td>
-                                                              <div class="due">$1151.00</div>
-                                                            </td>
-                                                          </tr>
-                                                        </tbody>
-                                                      </table>
-                                                    </div>
-                                                    <div style="clear:both"></div>
-                                                    <table class="items">
-                                                      <tbody>
-                                                        <tr>
-                                                          <th>Item</th>
-                                                          <th>Description</th>
-                                                          <th style="width: 140px;">Unit Cost</th>
-                                                          <th style="width: 70px;">Quantity</th>
-                                                          <th style="width: 140px;">Price</th>
-                                                        </tr>
-                                                        <tr class="item-row">
-                                                          <td class="item-name">
-                                                            <div class="delete-wpr"><textarea>Rado Watch</textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div>
-                                                          </td>
-                                                          <td class="description">
-                                                            <textarea>Rado Watch for Ebazar (Oct. 1 - Oct. 30, 2022)</textarea>
-                                                          </td>
-                                                          <td><textarea class="cost">$594.00</textarea></td>
-                                                          <td><textarea class="qty">1</textarea></td>
-                                                          <td><span class="price">$594.00</span></td>
-                                                        </tr>
-                                                        <tr class="item-row">
-                                                          <td class="item-name">
-                                                            <div class="delete-wpr"><textarea>Flower Port</textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div>
-                                                          </td>
-                                                          <td class="description"><textarea>Yearly Diwali of Flower Port gift on</textarea></td>
-                                                          <td><textarea class="cost">$199.00</textarea></td>
-                                                          <td><textarea class="qty">3</textarea></td>
-                                                          <td><span class="price">$557.00</span></td>
-                                                        </tr>
-                                                        <tr id="hiderow">
-                                                          <td colspan="5"><a id="addrow" href="javascript:;" title="Add a row">Add a row</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                          <td colspan="2" class="blank"> </td>
-                                                          <td colspan="2" class="total-line">Subtotal</td>
-                                                          <td class="total-value">
-                                                            <div id="subtotal">$1151.00</div>
-                                                          </td>
-                                                        </tr>
-                                                        <tr>
-                                                          <td colspan="2" class="blank"> </td>
-                                                          <td colspan="2" class="total-line">Total</td>
-                                                          <td class="total-value">
-                                                            <div id="total">$1151.00</div>
-                                                          </td>
-                                                        </tr>
-                                                        <tr>
-                                                          <td colspan="2" class="blank"> </td>
-                                                          <td colspan="2" class="total-line">Amount Paid</td>
-                                                          <td class="total-value"><textarea id="paid">$0.00</textarea></td>
-                                                        </tr>
-                                                        <tr>
-                                                          <td colspan="2" class="blank"> </td>
-                                                          <td colspan="2" class="total-line balance">Balance Due</td>
-                                                          <td class="total-value balance">
-                                                            <div class="due">$1151.00</div>
-                                                          </td>
-                                                        </tr>
-                                                      </tbody>
-                                                    </table>
-                                                    <div style="clear:both"></div>
-                                                    <div class="footer-note mt-5">
-                                                      <h5>Terms</h5>
-                                                      <textarea class="form-control bg-light">NET 30 Days. Finance Charge of 1.5% will be made on unpaid balances after 30 days.</textarea>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div class="col-12 text-center text-md-end">
-                                              <button type="button" class="btn btn-lg btn-primary" onclick="window.print();return false"><i class="fa fa-print me-2"></i>Print Invoice</button>
-                                              <button type="button" class="btn btn-lg btn-secondary"><i class="fa fa-envelope me-2"></i>Send PDF</button>
-                                            </div>
-                                        </div><!-- Row end  -->
+                                    <div class="container" style="text-align: right;">
+                                      <img class="invoice-img" src="{% static 'images/logo-black.svg'%}" alt="Company Logo"><br/><br/>
+                                                    <strong>Email:</strong> cartnbuy@gmail.com<br/>
+                                                    <strong>Phone:</strong> +918670647386<br/>
                                     </div>
+                                  </div>
+                                  <hr>
+                                  <div class="container d-flex justify-centent-around">
+                                    <div class="container" style="text-align: left; padding-right:20px; width:100%;">
+                                      <br />
+                                      <strong>Shipping Assress:</strong><br />
+                                       {{invoice_ins.order_id.shipto.name}}<br />
+                                       {{invoice_ins.order_id.shipto.abline1}}<br />
+                                       {{invoice_ins.order_id.shipto.abline2}}<br />
+                                       {{invoice_ins.order_id.shipto.city}}<br />
+                                       {{invoice_ins.order_id.shipto.state}}, {{invoice_ins.order_id.shipto.zip}}<br />
+                                    </div>
+                                    <div class="container">
+                                    </container>
+                                    <div class="container" style="text-align: left;margin-left:100px; margin-top:50px;">
+                                      <span><strong>Invoice:</strong> #{{invoice_ins.id}}</span><br />
+                                      <strong>Invoice Date:</strong> {{invoice_ins.invoice_date|date:"j M, Y"}}</br>
+                                      <strong>Payment Method:</strong> {{invoice_ins.invoice_date|date:"j M, Y"}}
+                                    </div>
+                                  </div>
                                 </div>
+                                <hr>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for product in invoice_ins.order_id.itemno.all%}
+                                        <tr >
+                                            <td style="text-align: left;">{{product.itmname}}</td>
+                                            <td>1</td>
+                                            <td>${{product.itm_new_price}}</td>
+                                        </tr>
+                                      {% endfor %}
+                                        <!-- Add more rows as needed -->
+                                    </tbody>
+                                </table>
+                                <div class="invoice-total">
+                                    <p><strong>Subtotal:</strong> &nbsp&nbsp&nbsp&nbsp $50.00</p>
+                                    <p style="padding-top:0px;"><strong>GST:</strong> &nbsp&nbsp&nbsp&nbsp $50.00</p>
+                                    <hr>
+                                    <p><strong>Total:</strong> &nbsp&nbsp&nbsp&nbsp ${{invoice_ins.order_id.order_total}}</p>
+                        
+                                </div>
+                                <div class="row" style="margin-top: 100px; text-align:center;">
+                                  <div class="col-lg-12">
+                                      <p class="text-muted"><strong>Terms &amp; Condition:</strong> Contrary to popular belief, Lorem Ipsum is not simply random text.</p>
+                                  </div>
+                              </div>
                             </div>
-                        </div> <!-- Row end  -->
-                    </div> <!-- tab end  -->
+                            <div class="col-lg-12 text-end">
+                              <a href="/generate_invoice/{{invoice_ins.id}}" type="button" class="btn btn-outline-secondary btn-lg my-1"><i class="fa fa-print"></i> Print</a>
+                              <button type="button" class="btn btn-primary btn-lg my-1"><i class="fa fa-paper-plane-o"></i> Send Invoice</button>
+                          </div>
+                            </div>
+                        </div> 
+                    </div>
                 </div>
             </div>
-
-        </div> <!-- Row end  -->
+        </div>
     </div>
 </div>
 
