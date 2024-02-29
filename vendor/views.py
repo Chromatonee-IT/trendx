@@ -3,6 +3,7 @@ from store.models import *
 from .models import *
 from .utils import *
 from django.conf import settings
+from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
@@ -520,7 +521,6 @@ def create_invoice(request):
     context={'navbar':'create_invoice'}
     return render(request,'create_invoice.html',context)
 
-
 @vendor_requirded(login_url='v_login')
 def update_invoice(request,id):
     invoice_ins = order_invoices.objects.get(id=id)
@@ -677,16 +677,12 @@ def waiting_email_verification(request):
 
 def verify_email(request,*args, **kwargs):
     token  = str(kwargs.get('token'))
-    print(request.user)
     cust_ins = customer.objects.filter(user=request.user.id).first()
-    try:
-        if token == cust_ins.email_verification_code:
-            cust_ins.email_isverified = True
-            cust_ins.save()
-            return redirect('v_register_type')
-    except Exception:
-        return redirect('waiting_email_verification')
-    return redirect('waiting_email_verification')
+
+    if token == cust_ins.email_verification_code:
+        cust_ins.email_isverified = True
+        cust_ins.save()
+    return redirect(reverse('v_register_type'))
     
 
 def v_register_type(request):
