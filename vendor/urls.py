@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('',views.dashboard,name='v_dashboard'),
     path('admin_dashboard/',views.dashboard,name='v_dashboard'),
     path('store_details/',views.vendor_profile,name='store_details'),
     path('products/',views.all_products,name='products'),
@@ -23,8 +24,11 @@ urlpatterns = [
     path('update_product_variant/',views.update_product_variant,name='update_product_variant'),
     path('product_details/<str:id>',views.product_details,name='product_details'),
     path('delete_variant/<int:id>',views.delete_variant,name='delete_variant'),
-    path('v_login/',views.v_login,name='v_login'),
+    path('v_login/',views.vendor_login,name='v_login'),
     path('v_register/',views.v_register,name='v_register'),
+    path('v_register/<str:ref_code>',views.v_register,name='v_register'),
+    path('waiting_email_verification/',views.waiting_email_verification,name='waiting_email_verification'),
+    path('verify_email/<str:token>',views.verify_email,name='verify_email'),
     path('v_register_type/',views.v_register_type,name='v_register_type'),
     path('v_register_gst/',views.v_register_gst,name='v_register_gst'),
     path('v_register_addhar/',views.v_register_addhar,name='v_register_addhar'),

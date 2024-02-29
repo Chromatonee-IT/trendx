@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect,HttpResponse
 from store.models import *
 from .models import *
+from .utils import *
+from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +15,8 @@ from io import BytesIO
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.contrib import messages
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 @csrf_exempt
@@ -40,6 +44,7 @@ def dashboard(request):
 @vendor_requirded(login_url='v_login')
 def vendor_profile(request):
     user = request.user
+    last_login = LastLogin.objects.get(user=user)
     if address.objects.filter(isactive=True,username = user).exists():
         address_ins = address.objects.get(isactive=True,username = user)
     else:
@@ -158,7 +163,7 @@ def vendor_profile(request):
         age = cur_date.year - cust_ins.birthday.year
     else:
         age = ''
-    context={'navbar':'store_details','user':user,'address_ins':address_ins,'store_ins':store_ins,'age':age}
+    context={'navbar':'store_details','user':user,'last_login':last_login,'address_ins':address_ins,'store_ins':store_ins,'age':age}
     return render(request,'vendor_profile.html',context)
 
 
@@ -389,7 +394,9 @@ def product_details(request,id):
 
 @vendor_requirded(login_url='v_login')
 def all_orders(request):
-    order_list = orders.objects.filter(vendor_id = request.user.id)
+    store_details_ins = store_details.objects.filter(store_vendor=request.user).first()
+    order_list = orders.objects.filter(vendor_id = store_details_ins)
+    print(order_list.first())
     context={'navbar':'orders','order_list':order_list}
     return render(request,'orders.html',context)
 
@@ -494,6 +501,7 @@ def coupon_add(request):
             discount.objects.create(vendor_by=request.user,offer=coupon_code,offer_cat=discount_type_ins,if_on_category=discount_category_ins,discount_value=discount_value,is_active=coupon_status,start_date=start_date,end_date=end_date)
             return redirect('sales_promotions')
         except Exception as e:
+            print(e)
             messages.error(request,e)
             return redirect('/coupon_add/')
     context={'navbar':'sales_promotions','categories':categories}
@@ -563,20 +571,22 @@ def help(request):
     context={'navbar':'help'}
     return render(request,'help.html',context)
 @csrf_exempt
-def v_login(request):
+def vendor_login(request):
     if request.method == "POST":
         try:
             username = request.POST["username"]
             password = request.POST["password"]
-
-
             user = authenticate(request,username = username, password=password)
+            login(request,user)
+            store_document_ins = store_document.objects.filter(store_vendor=request.user.id).exists()
             if user is None:
                 messages.error(request,"Enter correct credintials!")
                 return redirect('v_login')
-            if user.is_staff == True:
-                login(request,user)
+            elif user.is_staff == True:
                 return redirect('v_dashboard')
+            elif store_document_ins == False:
+                messages.error(request,"Please verify your documents.")
+                return redirect('v_register_type')
             else:
                 messages.error(request,"You are not verified yet.")
                 return redirect('v_login')
@@ -588,7 +598,8 @@ def v_login(request):
     return render(request,'v_login.html',context)
 
 @csrf_exempt
-def v_register(request):
+def v_register(request,*args, **kwargs):
+    code  = str(kwargs.get('ref_code'))
     if request.method == 'POST':
         try:
             username = request.POST['username']
@@ -598,7 +609,6 @@ def v_register(request):
             phone_number = request.POST['phone']
             terms_and_conditions = request.POST.get('termsandconditions', False)
             phone_number = request.POST.get('phone', '')
-
             if len(phone_number) >= 10 and not phone_number.isdigit():
                 messages.error(request,"Phone number must be 10 digits!")
                 return redirect('v_register')
@@ -618,11 +628,15 @@ def v_register(request):
                 user.email = email
                 user.save()
                 # Create a user profile
-                customer.objects.create(user=user, name = username, email=email, phone_number=phone_number)
-                # Authenticate the user and log them in
+                if code == "None":
+                    customer.objects.create(user=user, name = username, email=email, phone_number=phone_number)
+                    
+                else:
+                    user_ins = customer.objects.get(code = code)
+                    customer.objects.create(user=user, name = username, email=email, phone_number=phone_number,referred_by_user=user_ins.user)
                 user = authenticate(username=username, password=password)
                 login(request, user)
-                return redirect('v_register_type')
+                return redirect('waiting_email_verification')
             else:
                 messages.error(request,"Kindly agree to the Terms & Conditions.")
                 return redirect('v_register')
@@ -632,7 +646,37 @@ def v_register(request):
     context={}
     return render(request,'v_register.html',context)
 
+def waiting_email_verification(request):
+    cust_ins = customer.objects.get(user=request.user)
+    if cust_ins.email_isverified == True:
+        return redirect('v_register_type')
+    else:
+        subject = 'Please verify your email.'
+        from_email = settings.EMAIL_HOST_USER
+        to_email = [cust_ins.email]
+        # static_image_url = f"{settings.BASE_URL}{settings.STATIC_URL}/images/logo-blue.png"
+        base_url = settings.BASE_URL
+        html_content = render_to_string('email_verification.html', {'base_url':base_url,'customer_ins': cust_ins})
+        email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)
+        email.attach_alternative(html_content, "text/html")
+        email.send()
+    return render(request,'wating_email_verification.html')
+
+def verify_email(request,*args, **kwargs):
+    token  = str(kwargs.get('token'))
+    cust_ins = customer.objects.get(user=request.user)
+    try:
+        if token == cust_ins.email_verification_code:
+            cust_ins.email_isverified = True
+            cust_ins.save()
+            return redirect('v_register_type')
+    except Exception:
+        return redirect('waiting_email_verification')
+
 def v_register_type(request):
+    cust_ins = customer.objects.get(user=request.user)
+    if cust_ins.email_isverified == False:
+        return redirect('verify_email')
     return render(request,'v_register_type.html')
 
 def v_register_gst(request):
@@ -640,17 +684,26 @@ def v_register_gst(request):
         try:
             store_name = request.POST['store_name']
             gst_no = request.POST['gst_no']
+            micr_code = request.POST['micr_code']
 
             if not store_document.objects.filter(store_vendor = request.user):
-                store_details.objects.create(store_vendor = request.user,store_name=store_name)
-                store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],pan_card=request.FILES['pan_card'],trade_lisence=request.FILES['trade_lisence'],gst_no=gst_no)
+                if not store_document.objects.filter(gst_no=gst_no).exists():
+                    store_details.objects.create(store_vendor = request.user,store_name=store_name)
+                    store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],gst_no=gst_no,gst_certificate=request.FILES['gst_certificate'],bank_micr=micr_code)
+                    if 'trade_lisence' in request.FILES:
+                        store_ins = store_document.objects.get(gst_no=gst_no)
+                        store_ins.trade_lisence=request.FILES['trade_lisence']
+                else:
+                    messages.success(request,"GST already exists!")
+                    return redirect('v_register_gst')
                 messages.success(request,"We are verifying your account.")
-                return redirect('store_details')
+                return redirect('v_login')
             else:
                 messages.error(request,"Store already exists!")
                 return redirect('v_login')
         except Exception as e:
-            print(e)
+            messages.error(request,"Fill the form correctly.")
+            return redirect('v_register_gst')
 
     return render(request,'register_gst.html')
 
@@ -658,20 +711,29 @@ def v_register_addhar(request):
     if request.method == 'POST':
         try:
             store_name = request.POST['store_name']
+            micr_code = request.POST['micr_code']
             if not store_document.objects.filter(store_vendor = request.user):
-                if 'adhar_card' in request.FILES and 'pan_card' in request.FILES:
+                if not store_document.objects.filter(store_vendor = request.user).exists():
                     store_details.objects.create(store_vendor = request.user,store_name=store_name)
-                    store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],pan_card=request.FILES['pan_card'])
-                    messages.success(request,"We are verifying your account.")
-                    return redirect('store_details')
+                    store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],bank_micr=micr_code)
+                else:
+                    messages.success(request,"Document already exists!")
+                    return redirect('v_register_gst')
+                messages.success(request,"We are verifying your account.")
+                return redirect('v_login')
             else:
                 messages.error(request,"Store already exists!")
                 return redirect('v_login')
         except Exception as e:
             print(e)
-
+            messages.error(request,"Fill the form correctly.")
+            return redirect('v_register_addhar')
     return render(request,'register_addhar.html')
 
 def vendor_logout(request):
     logout(request)
     return redirect('v_login')
+
+
+# def send_email_verification(request):
+#     email_code = 

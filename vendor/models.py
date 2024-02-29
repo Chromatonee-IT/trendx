@@ -28,9 +28,11 @@ class store_document(models.Model):
     store_vendor = models.OneToOneField(User, on_delete=models.SET_NULL,null = True)
     adhar_card = models.ImageField(upload_to='kyc/',null=True,blank = False)
     pan_card = models.ImageField(upload_to='kyc/',null=True,blank = False)
+    cancel_check = models.ImageField(upload_to='kyc/',null=True,blank = False)
+    bank_micr = models.CharField(max_length=9,null=True,blank = False)
     trade_lisence = models.ImageField(upload_to='kyc/',null=True,blank = True)
+    gst_certificate = models.ImageField(upload_to='kyc/',null=True,blank = True)
     gst_no = models.CharField(max_length=100,null=True,blank = True)
 
     def __str__(self):
         return str(self.store_vendor)
-    

@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dashboard </title>
-    <link rel="icon" href="{% static 'images/favicon.ico'%}" type="image/x-icon"> <!-- Favicon-->
+    <title>Document Verify - Vendor </title>
+    <link rel="icon" href="{% static 'images/favicon.png'%}" type="image/png" /> <!-- Favicon-->
 
     <!-- plugin css file  -->
     <link rel="stylesheet" href="{% static 'plugin/datatables/responsive.dataTables.min.css'%}">
@@ -34,6 +34,17 @@
                         </div>
                         <p class="mt-3">Join the trend in a few clicks.</p>
                         <hr class="mt-4">
+                        <div class="d-flex justify-content-center">
+                            {% if messages%}{% for message in messages%}
+                            <div class="alert {{message.tags}} fade show" id="alert-box">
+                                <div class="d-flex align-items-center">
+                                    <i class='bx bx-info-circle fs-5 m-2'></i>
+                                {{message}}
+                                {% endfor %}
+                                </div>
+                              </div>
+                            {% endif %}
+                        </div>
                         <div class="col-lg-6 d-flex justify-content-center align-items-center border-0 rounded-lg auth-h100 p-2">
 
                             <div class="w-100 p-3 p-md-5 card border-1 shadow-lg" style="max-width: 32rem;">
@@ -78,4 +89,10 @@
 
         </div>
 </body>
+<script>
+    function hide_alert(){
+        document.getElementById("alert-box").style.display="None";
+       }
+       setTimeout(hide_alert,5000);
+</script>
 </html>

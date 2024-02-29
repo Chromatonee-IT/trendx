@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import  Sum,Avg,Count
 from vendor.models import *
+from vendor.utils import *
 
 
 
@@ -11,7 +12,11 @@ class customer(models.Model):
     name = models.CharField(max_length=200, null=True)
     phone_number = models.CharField(max_length=15,null=True)
     email = models.EmailField(max_length=200, null=True)
+    email_verification_code = models.CharField(max_length=100, blank=True)
+    email_isverified = models.BooleanField(default=False)
     birthday = models.DateField(blank=True,null=True)
+    code = models.CharField(max_length=12,blank=True)
+    referred_by_user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True,related_name='referred_by')
     cusstomer_image = models.ImageField(upload_to='images/uploads/',null=True,blank=True)
     user_datecreated = models.DateTimeField(auto_now_add=True)
     user_dateupdated = models.DateTimeField(auto_now=True)
@@ -19,6 +24,16 @@ class customer(models.Model):
     def __str__(self):
         return self.name
 
+    def get_recoended_by(self, *args, **kwargs):
+        pass
+    
+    def save(self, *args, **kwargs):
+        if self.code == "" or self.email_verification_code == "":
+            code = generate_ref_code()
+            email_code = generate_email_verification_code()
+            self.code = code
+            self.email_verification_code = email_code
+        super().save(*args,**kwargs)
 
     def total_order(self):
         total = 0
@@ -29,8 +44,12 @@ class customer(models.Model):
 class LastLogin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     last_login_ip = models.GenericIPAddressField(null=True, blank=True)
+    browser_name = models.CharField(max_length=50,null=True, blank=True)
+    device_name = models.CharField(max_length=50,null=True, blank=True)
     last_login_timestamp = models.DateTimeField(auto_now=True) 
 
+    def __str__(self):
+        return str(self.user)
 
 class address(models.Model):
     username = models.ForeignKey(User, on_delete=models.SET_NULL, null =True)

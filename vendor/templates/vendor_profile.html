@@ -73,19 +73,20 @@
                                     </div>
                                 </div>
                             </div>
-                            {% comment %} <div class="card mb-3">
-                                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
-                                    <h6 class="mb-0 fw-bold ">Payment Method</h6>
+                            <div class="card mb-3">
+                                <div class="card-header d-flex justify-content-between bg-transparent border-bottom-0">
+                                    <h6 class="mb-0 fw-bold ">Refer and earn</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div class="payment-info">
-                                        <h5 class="payment-name text-muted"><i class="icofont-visa-alt fs-3"></i> Visa *******7548</h5>
-                                        <span>Next billing charged $48</span>
-                                        <br>
-                                        <em class="text-muted">Autopay on July 20, 2021</em>
-                                        <a href="javascript:void(0);" class="edit-payment-info text-secondary">Edit Payment Info</a>
+                                    <small class="fw-bold text-muted"><span style="color:red;">**</span> Invite your friends and family to join the Cart And Buy community.</small>
+                                    <div class="mt-3 d-flex payment-info">
+                                        <span class="input-group-text">Code:</span>
+                                        <input name="ref_code" type="text" class="form-control" id="share-link" value="{{user.customer.code}}" readonly>
                                     </div>
-                                    <p class="mt-3"><a href="javascript:void(0);" class="btn btn-primary"> Add Payment Info</a></p>
+                                    <div class="d-flex">
+                                    <p class="mt-3"><button onclick="copylink()" class="btn btn-primary">Share link</button></p>
+                                    {% comment %} <p style="padding-left:5px;" class="mt-3"><button onclick="copyToClipboard()" class="btn btn-primary"> Copy code</button></p> {% endcomment %}
+                                    </div>
                                 </div>
                             </div>
                             <div class="card">
@@ -107,7 +108,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div> {% endcomment %}
+                            </div>
                         </div>
                         <div class="col-xl-8 col-lg-7 col-md-12">
                             <div class="card mb-3">
@@ -225,9 +226,9 @@
                                             <label class="form-label col-6 col-sm-5">User Name :</label>
                                             <span><strong>{{user.username}}</strong></span>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="d-flex col-12">
                                             <label class="form-label col-6 col-sm-5">Last Login:</label>
-                                            <span><strong>128.456.89 (Apple) safari</strong></span>
+                                            <span><strong>{{last_login.last_login_ip}} ({{last_login.device_name}}) - {{last_login.browser_name}}</strong></span>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label col-6 col-sm-5">Date Joined:</label>
@@ -404,5 +405,27 @@
             }
         });
     });
+</script>
+<script>
+    function copyToClipboard() {
+        var copyText = document.getElementById("share-link");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+        document.execCommand("copy");
+    }
+    function copylink() {
+        var urlParts = window.location.href.split('/');
+        var url = urlParts[0] + '//' + urlParts[2] + '/v_register/';
+        var copyText = document.getElementById("share-link");
+        var newurl = url + copyText.value
+        var tempTextArea = document.createElement("textarea");
+        tempTextArea.value = newurl;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempTextArea);
+        alert("Copied the link: " + newurl);
+    }
+
 </script>
 {% endblock content%}

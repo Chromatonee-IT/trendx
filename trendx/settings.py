@@ -19,7 +19,7 @@ MESSAGE_TAGS = {
 SECRET_KEY = '()6f$@712andea35dnw^kmaps8u%kc))p%%^%3i+3h6*hob)wq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -86,23 +86,23 @@ WSGI_APPLICATION = 'trendx.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cartandbuy',
-        'USER': 'cartandbuy',
-        'PASSWORD': 'cartandbuy',
-        'HOST': 'database.cpk4o8s449a3.eu-north-1.rds.amazonaws.com',
-        'PORT': '5432',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'cartandbuy',
+#         'USER': 'cartandbuy',
+#         'PASSWORD': 'cartandbuy',
+#         'HOST': 'database.cpk4o8s449a3.eu-north-1.rds.amazonaws.com',
+#         'PORT': '5432',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -148,6 +148,16 @@ STATICFILES_DIRS = [
 
 MEDIA_URLS = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+BASE_URL = 'https://cartnbuy.in'
+
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.zoho.in'  # Your SMTP server
+EMAIL_PORT = 587  # Your SMTP port (587 for TLS, 465 for SSL)
+EMAIL_USE_TLS = True  # Use TLS (True/False)
+EMAIL_HOST_USER = 'support@cartnbuy.in'  # Your email address
+EMAIL_HOST_PASSWORD = 'Cartandbuy@123'  # Your email password
 
 
 
