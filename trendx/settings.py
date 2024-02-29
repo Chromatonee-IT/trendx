@@ -19,7 +19,7 @@ MESSAGE_TAGS = {
 SECRET_KEY = '()6f$@712andea35dnw^kmaps8u%kc))p%%^%3i+3h6*hob)wq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -86,23 +86,23 @@ WSGI_APPLICATION = 'trendx.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'cartandbuy',
-#         'USER': 'cartandbuy',
-#         'PASSWORD': 'cartandbuy',
-#         'HOST': 'database.cpk4o8s449a3.eu-north-1.rds.amazonaws.com',
-#         'PORT': '5432',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cartandbuy',
+        'USER': 'cartandbuy',
+        'PASSWORD': 'cartandbuy',
+        'HOST': 'database.cpk4o8s449a3.eu-north-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -145,6 +145,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+STATIC_ROOT='staticfiles'
 
 MEDIA_URLS = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')

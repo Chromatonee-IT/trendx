@@ -576,14 +576,22 @@ def vendor_login(request):
         try:
             username = request.POST["username"]
             password = request.POST["password"]
+            username_ins = User.objects.filter(email=username).first()
+            if username_ins:
+                username = username_ins.username
+            else:
+                username = request.POST["username"]
             user = authenticate(request,username = username, password=password)
             login(request,user)
             store_document_ins = store_document.objects.filter(store_vendor=request.user.id).exists()
+            cust_ins = customer.objects.get(user=user)
             if user is None:
                 messages.error(request,"Enter correct credintials!")
                 return redirect('v_login')
             elif user.is_staff == True:
                 return redirect('v_dashboard')
+            elif cust_ins.email_isverified == False:
+                return redirect('waiting_email_verification')
             elif store_document_ins == False:
                 messages.error(request,"Please verify your documents.")
                 return redirect('v_register_type')
