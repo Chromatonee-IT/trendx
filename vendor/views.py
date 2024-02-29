@@ -44,7 +44,10 @@ def dashboard(request):
 @vendor_requirded(login_url='v_login')
 def vendor_profile(request):
     user = request.user
-    last_login = LastLogin.objects.get(user=user)
+    if LastLogin.objects.filter(user=user).exists():
+        last_login = LastLogin.objects.get(user=user)
+    else:
+        last_login = ""
     if address.objects.filter(isactive=True,username = user).exists():
         address_ins = address.objects.get(isactive=True,username = user)
     else:
@@ -655,7 +658,9 @@ def v_register(request,*args, **kwargs):
     return render(request,'v_register.html',context)
 
 def waiting_email_verification(request):
-    cust_ins = customer.objects.get(user=request.user)
+    cust_ins = customer.objects.filter(user=request.user.id).first()
+    if cust_ins == None:
+        return redirect('v_login')
     if cust_ins.email_isverified == True:
         return redirect('v_register_type')
     else:
@@ -672,7 +677,8 @@ def waiting_email_verification(request):
 
 def verify_email(request,*args, **kwargs):
     token  = str(kwargs.get('token'))
-    cust_ins = customer.objects.get(user=request.user)
+    print(request.user)
+    cust_ins = customer.objects.filter(user=request.user.id).first()
     try:
         if token == cust_ins.email_verification_code:
             cust_ins.email_isverified = True
@@ -680,6 +686,8 @@ def verify_email(request,*args, **kwargs):
             return redirect('v_register_type')
     except Exception:
         return redirect('waiting_email_verification')
+    return redirect('waiting_email_verification')
+    
 
 def v_register_type(request):
     cust_ins = customer.objects.get(user=request.user)

@@ -6,6 +6,7 @@ import re
 @receiver(user_logged_in)
 def update_last_login(sender, user, request, **kwargs):
     last_login, created = LastLogin.objects.get_or_create(user=user)
+    print(last_login)
     user_agent_raw = request.META.get('HTTP_USER_AGENT', '')[:100]
     browser_name = user_agent_raw.split('(')[0].strip()
     pattern = r'\((.*?)\)'
