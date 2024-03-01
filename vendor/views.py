@@ -573,6 +573,7 @@ def all_report(request):
 def help(request):
     context={'navbar':'help'}
     return render(request,'help.html',context)
+
 @csrf_exempt
 def vendor_login(request):
     if request.method == "POST":
@@ -673,19 +674,21 @@ def waiting_email_verification(request):
         email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)
         email.attach_alternative(html_content, "text/html")
         email.send()
-    return render(request,'wating_email_verification.html')
+    return redirect('verify_email')
 
-def verify_email(request,*args, **kwargs):
-    token  = str(kwargs.get('token'))
-    cust_ins = customer.objects.filter(user=request.user.id).first()
-    if cust_ins != None:
-        if token == str(cust_ins.email_verification_code):
-            cust_ins.email_isverified = True
-            cust_ins.save()
-            return redirect('v_register_type')
-        else:
-            return redirect('v_login')
-    return redirect('waiting_email_verification')
+@csrf_exempt
+def verify_email(request):
+    if request.method == "POST":
+        token = request.POST.get('token')
+        cust_ins = customer.objects.filter(user=request.user.id).first()
+        if cust_ins != None:
+            if token == cust_ins.email_verification_code:
+                cust_ins.email_isverified = True
+                cust_ins.save()
+                return redirect('v_register_type')
+            else:
+                return redirect('v_login')
+    return render(request,'wating_email_verification.html')
     
 
 def v_register_type(request):

@@ -5,6 +5,6 @@ def generate_ref_code():
     return code
 
 def generate_email_verification_code():
-    code = str(uuid.uuid4())
+    code = str(uuid.uuid4())[:13]
     return code
 

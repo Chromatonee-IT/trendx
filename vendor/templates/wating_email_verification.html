@@ -48,7 +48,9 @@
                                     {% endif %}
                                 </div>
                                 <!-- Form -->
-                                    <div class="">
+                                <form class="row g-3" action="" Method="POST">
+                                    {% csrf_token %}
+                                 <div class="">
                                         <div class="d-flex justify-content-center mb-0">
                                             <img style="max-width:50%;" src="{% static 'images/logo-black.svg'%}" alt="login-img">
                                         </div>
@@ -57,13 +59,18 @@
                                         <h5>Verify your email.</h5>
                                     </div>
                                     <div class="col-12 text-center text-muted mb-3">
-                                        <h6 class="text-muted">We've sent an email to your inbox. Please check your email to verify your email address.</h6>
+                                        <h6 class="text-muted">We've sent a code to your email. Please enter the code to verify your email address.</h6>
                                     </div>
-                                        <div class="col-12">
-                                            <div class="d-grid">
-                                                <div  type="submit" class="btn btn-lg btn-warning btn-light lift text-uppercase" value="Submit"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Waiting for verification</div>
-                                            </div>
+                                    <div class="col-12">
+                                        <label for="inputuserid" class="form-label">Enter the code:</label>
+                                        <input type="text" class="form-control" name="token" placeholder="Email Code">
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <div class="d-grid">
+                                            <button  type="submit" class="btn btn-lg btn-warning btn-light lift text-uppercase" value="Submit"> Verify Email</button>
                                         </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div> <!-- End Row -->
