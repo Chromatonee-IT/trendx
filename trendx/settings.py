@@ -23,7 +23,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://*.cartnbuy.in','.cartnbuy.in']
+# CSRF_TRUSTED_ORIGINS = ['https://*.cartnbuy.in','.cartnbuy.in']
 
 # Application definition
 

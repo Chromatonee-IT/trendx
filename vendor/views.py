@@ -676,18 +676,15 @@ def waiting_email_verification(request):
     return render(request,'wating_email_verification.html')
 
 def verify_email(request,*args, **kwargs):
-    try:
-        token  = str(kwargs.get('token'))
-        cust_ins = customer.objects.filter(user=request.user.id).first()
-        if cust_ins != None:
-            if token == cust_ins.email_verification_code:
-                cust_ins.email_isverified = True
-                cust_ins.save()
-                return redirect('v_register_type')
+    token  = str(kwargs.get('token'))
+    cust_ins = customer.objects.filter(user=request.user.id).first()
+    if cust_ins != None:
+        if token == str(cust_ins.email_verification_code):
+            cust_ins.email_isverified = True
+            cust_ins.save()
+            return redirect('v_register_type')
         else:
             return redirect('v_login')
-    except Exception:
-        return redirect('waiting_email_verification')
     return redirect('waiting_email_verification')
     
 
