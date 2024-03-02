@@ -157,7 +157,6 @@ def address_user(request):
             country = request.POST['country_edit']
             postal = request.POST['zip_edit']
             if address.objects.filter(name=name,zip=postal).exists():
-                print("success!!!")
                 address.objects.filter(username=request.user,name=name,email=email,phone=phone,abline1=addln1,abline2=addln2,abline3=addln3,city=city,state=state,country=country,zip=postal).update(username=request.user,name=name,email=email,phone=phone,abline1=addln1,abline2=addln2,abline3=addln3,city=city,state=state,country=country,zip=postal)
                 messages.success(request,'Address updated.')
                 return redirect('address')

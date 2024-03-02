@@ -7,11 +7,16 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 import base64
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import receiver
+from store.models import LastLogin
+import re
+
 
 @receiver(post_save, sender=User)
 def send_staff_permission_email(sender, instance, created, **kwargs):
     if not created and instance.is_staff:
-        subject = 'Vendor Access Granted'
+        subject = 'Vendor access has been  granted'
         from_email = settings.EMAIL_HOST_USER
         to_email = [instance.customer.email]
         # static_image_url = f"{settings.BASE_URL}{settings.STATIC_URL}/images/logo-blue.png"
@@ -20,3 +25,17 @@ def send_staff_permission_email(sender, instance, created, **kwargs):
         email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)
         email.attach_alternative(html_content, "text/html")
         email.send()
+
+@receiver(user_logged_in)
+def update_last_login(sender, user, request, **kwargs):
+    last_login, created = LastLogin.objects.get_or_create(user=user)
+    user_agent_raw = request.META.get('HTTP_USER_AGENT', '')[:100]
+    browser_name = user_agent_raw.split('(')[0].strip()
+    pattern = r'\((.*?)\)'
+    matches = re.findall(pattern, user_agent_raw)
+    device_name = matches[0]
+    last_login_ip = request.META.get('REMOTE_ADDR')
+    last_login.last_login_ip = last_login_ip
+    last_login.browser_name = str(browser_name)
+    last_login.device_name = str(device_name)
+    last_login.save()

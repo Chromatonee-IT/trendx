@@ -7,6 +7,3 @@ class VendorConfig(AppConfig):
 
     def ready(self):
         import vendor.receivers
-
-    def ready(self):
-        import vendor.signals

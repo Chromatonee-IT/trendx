@@ -85,15 +85,16 @@ def vendor_profile(request):
                     cust_ins.cusstomer_image = request.FILES['profile_photo']
                 cust_ins.save()
 
-                if not address.objects.filter(username=request.user):
+                if not address.objects.filter(username=request.user,isactive=True):
                     address.objects.create(username=request.user,name=name,email=user_email,phone=user_phone,abline1=abline1,abline2=abline2,abline3=abline3,city=city,state=state,zip=postal,isactive=True)
                     messages.success(request,"Address added successfully.")
                     return redirect('store_details')
-                elif address.objects.filter(name=name,zip=postal).exists():
-                    messages.error(request,"Address already exists!")
+                else :
+                    address.objects.filter(username=request.user,isactive=True).update(username=request.user,name=name,email=user_email,phone=user_phone,abline1=abline1,abline2=abline2,abline3=abline3,city=city,state=state,zip=postal,isactive=True)
+                    messages.error(request,"Address updated successfully!")
                     return redirect('store_details')
-                else:
-                    address.objects.create(username=request.user,name=name,email=user_email,phone=user_phone,abline1=abline1,abline2=abline2,abline3=abline3,city=city,state=state,zip=postal)
+                # else:
+                #     address.objects.create(username=request.user,name=name,email=user_email,phone=user_phone,abline1=abline1,abline2=abline2,abline3=abline3,city=city,state=state,zip=postal)
 
                 return redirect('store_details')
             except Exception as e:
@@ -603,7 +604,7 @@ def vendor_login(request):
                 messages.error(request,"You are not verified yet.")
                 return redirect('v_login')
         except Exception as e:
-            messages.error(request,e)
+            messages.error(request,"Enter correct credintials!")
             return redirect('v_login')
 
     context={}
@@ -678,22 +679,32 @@ def waiting_email_verification(request):
 
 @csrf_exempt
 def verify_email(request):
-    if request.method == "POST":
-        token = request.POST.get('token')
-        cust_ins = customer.objects.filter(user=request.user.id).first()
-        if cust_ins != None:
-            if token == cust_ins.email_verification_code:
-                cust_ins.email_isverified = True
-                cust_ins.save()
-                return redirect('v_register_type')
-            else:
-                return redirect('v_login')
+    cust_ins = customer.objects.filter(user=request.user.id).first()
+    if cust_ins == None:
+        return redirect('v_login')
+    elif cust_ins.email_isverified == True:
+        return redirect('v_register_type')
+    else:
+        if request.method == "POST":
+            token = request.POST.get('token')
+            print(token)
+            cust_ins = customer.objects.filter(user=request.user.id).first()
+            if cust_ins != None:
+                if token == cust_ins.email_verification_code:
+                    cust_ins.email_isverified = True
+                    cust_ins.save()
+                    return redirect('v_register_type')
+                else:
+                    messages.error(request,"Invalid OTP")
+                    return redirect('verify_email')
     return render(request,'wating_email_verification.html')
     
 
 def v_register_type(request):
-    cust_ins = customer.objects.get(user=request.user)
-    if cust_ins.email_isverified == False:
+    cust_ins = customer.objects.filter(user=request.user.id).first()
+    if cust_ins is None:
+        return redirect('v_login')
+    elif cust_ins.email_isverified == False:
         return redirect('waiting_email_verification')
     return render(request,'v_register_type.html')
 
@@ -743,7 +754,6 @@ def v_register_addhar(request):
                 messages.error(request,"Store already exists!")
                 return redirect('v_login')
         except Exception as e:
-            print(e)
             messages.error(request,"Fill the form correctly.")
             return redirect('v_register_addhar')
     return render(request,'register_addhar.html')
