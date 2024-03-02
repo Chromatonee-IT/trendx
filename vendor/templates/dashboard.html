@@ -10,7 +10,7 @@
                     <div class="avatar rounded no-thumbnail bg-success text-light"><i class="fa fa-dollar fa-lg"></i></div>
                     <div class="flex-fill ms-3 text-truncate">
                         <div class="h6 mb-0">Revenue</div>
-                        <span class="small">$0</span>
+                        <span class="small">₹0</span>
                     </div>
                 </div>
             </div>
@@ -21,7 +21,7 @@
                     <div class="avatar rounded no-thumbnail bg-danger text-light"><i class="fa fa-credit-card fa-lg"></i></div>
                     <div class="flex-fill ms-3 text-truncate">
                         <div class="h6 mb-0">Expense</div>
-                        <span class="small">$0</span>
+                        <span class="small">₹0</span>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                                 <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
                                     <div class="left-info">
                                         <span class="text-muted">Avg Sale</span>
-                                        <div><span class="fs-6 fw-bold me-2">$0</span></div>
+                                        <div><span class="fs-6 fw-bold me-2">₹0</span></div>
                                     </div>
                                     <div class="right-icon">
                                         <i class="icofont-sale-discount fs-3 color-santa-fe"></i>
@@ -99,7 +99,7 @@
                                 <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
                                     <div class="left-info">
                                         <span class="text-muted">Total Sale</span>
-                                        <div><span class="fs-6 fw-bold me-2">$0</span></div>
+                                        <div><span class="fs-6 fw-bold me-2">₹0</span></div>
                                     </div>
                                     <div class="right-icon">
                                         <i class="icofont-calculator-alt-1 fs-3 color-lightblue"></i>
@@ -189,7 +189,7 @@
                                 <td>{{orders.cutomer_id}}</td>
                                 <td>{{orders.paymentid}}</td>
                                 <td>
-                                    ${{orders.order_total}}
+                                    ₹{{orders.order_total}}
                                 </td>
                                 <td><span class="badge bg-warning">Progress</span></td>
                             </tr>
@@ -229,7 +229,7 @@
                                 <td><a href="/product_details/{{product.id}}"><h6 class="mb-3 fw-bold">{{product.itmname}}<span class="text-muted small fw-light d-block">Product Id: #{{product.id}}</span></h6></a></td>
                                 <td>0</td>
                                 <td>{{product.total_review}}</td>
-                                <td>${{product.itm_new_price}}</td>
+                                <td>₹{{product.itm_new_price}}</td>
                                 <td><span class="badge bg-warning">Progress</span></td>
                             </tr>
                         {% endfor %}
