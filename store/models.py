@@ -14,6 +14,7 @@ class customer(models.Model):
     email = models.EmailField(max_length=200, null=True)
     email_verification_code = models.CharField(max_length=100, blank=True)
     email_isverified = models.BooleanField(default=False)
+    vendor_active_email = models.BooleanField(default=False)
     birthday = models.DateField(blank=True,null=True)
     code = models.CharField(max_length=12,blank=True)
     referred_by_user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True,related_name='referred_by')

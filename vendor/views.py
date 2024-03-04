@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,HttpResponse
 from store.models import *
 from .models import *
 from .utils import *
+from .receivers import *
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
@@ -594,6 +595,7 @@ def vendor_login(request):
                 messages.error(request,"Enter correct credintials!")
                 return redirect('v_login')
             elif user.is_staff == True:
+                # set_user_logged_in_status(False)
                 return redirect('v_dashboard')
             elif cust_ins.email_isverified == False:
                 return redirect('waiting_email_verification')
@@ -654,6 +656,7 @@ def v_register(request,*args, **kwargs):
                 messages.error(request,"Kindly agree to the Terms & Conditions.")
                 return redirect('v_register')
         except Exception as e:
+            print(e)
             messages.error(request,e)
             return redirect('v_register')
     context={}
@@ -763,5 +766,45 @@ def vendor_logout(request):
     return redirect('v_login')
 
 
-# def send_email_verification(request):
-#     email_code = 
+# def vendor_reset_email(request):
+#     if request.method == 'POST':
+#         email_id = request.POST.get('email')
+#         email_code = str(uuid.uuid4())[:8].replace("_","")
+#         subject = 'Please verify your email.'
+#         from_email = settings.EMAIL_HOST_USER
+#         to_email = [email_id]
+#         # static_image_url = f"{settings.BASE_URL}{settings.STATIC_URL}/images/logo-blue.png"
+#         base_url = settings.BASE_URL
+#         html_content = render_to_string('email_verification.html', {'base_url':base_url,'email_code': email_code})
+#         email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)     
+#         email.attach_alternative(html_content, "text/html")
+#         email.send()
+#         return redirect('/vendor_resetpassword/?email={}'.format(email_id))
+#     return render(request,'vendor_email_reset.html')
+
+
+# def vendor_resetpassword(request):
+#     email = request.GET.get('email')
+#     print(email)
+#     cust_ins = customer.objects.filter(email=email).first()
+#     if request.method == 'POST':
+#         user_ins = User.objects.filter(email=email).first()
+#         email_code = request.session.get("email_code")
+#         user_input_code = request.POST.get('user_input_code')
+#         if cust_ins.email_verification_code == user_input_code:
+#             print(user_ins.username)
+#     return render(request,'vendor_forgot_pass.html')
+
+# return redirect('/product_details/'+str(product_id))
+
+# def vendor_setpassword(request):
+#     # subject = 'Please verify your email.'
+#     # from_email = settings.EMAIL_HOST_USER
+#     # to_email = [cust_ins.email]
+#     # # static_image_url = f"{settings.BASE_URL}{settings.STATIC_URL}/images/logo-blue.png"
+#     # base_url = settings.BASE_URL
+#     # html_content = render_to_string('email_verification.html', {'base_url':base_url,'customer_ins': cust_ins})
+#     # email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)
+#     # email.attach_alternative(html_content, "text/html")
+#     # email.send()
+#     return render(request,'set_new_password.html')

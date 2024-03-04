@@ -7,15 +7,18 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 import base64
-from django.contrib.auth.signals import user_logged_in
-from django.dispatch import receiver
+from django.contrib.auth.signals import user_logged_in,user_logged_out
 from store.models import LastLogin
 import re
+from django.db.models.signals import Signal
 
 
 @receiver(post_save, sender=User)
-def send_staff_permission_email(sender, instance, created, **kwargs):
-    if not created and instance.is_staff:
+def send_staff_permission_email(sender, instance, **kwargs):
+    cust_ins = customer.objects.filter(user=instance).first()
+    if instance.is_staff and cust_ins.vendor_active_email == False:
+        cust_ins.vendor_active_email = True
+        cust_ins.save()
         subject = 'Vendor access has been  granted'
         from_email = settings.EMAIL_HOST_USER
         to_email = [instance.customer.email]
