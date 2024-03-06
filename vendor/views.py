@@ -21,9 +21,16 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 
+def home(request):
+    return render(request,'home.html')
+
 @csrf_exempt
 def vendor_requirded(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
+
+@csrf_exempt
+def superuser_required(login_url=None):
+    return user_passes_test(lambda u: u.is_superuser, login_url=login_url)
 
 @vendor_requirded(login_url='v_login')
 def dashboard(request):
@@ -195,8 +202,6 @@ def all_products(request):
         product = products_queryset.filter(
             get_average_rating__gte=min_rating_value
         )
-
-    
     
     if request.method == 'GET':
         search_attr = request.GET.get('search', '')
@@ -808,3 +813,71 @@ def vendor_logout(request):
 #     # email.attach_alternative(html_content, "text/html")
 #     # email.send()
 #     return render(request,'set_new_password.html')
+
+
+@csrf_exempt
+def vendor_admin_login(request):
+    if request.method == "POST":
+        try:
+            username = request.POST["username"]
+            password = request.POST["password"]
+            username_ins = User.objects.filter(email=username).first()
+            if username_ins:
+                username = username_ins.username
+            else:
+                username = request.POST["username"]
+            
+            user = authenticate(request,username = username, password=password)
+            if user.is_superuser == True:
+                login(request,user)
+                return redirect('vendor_admin')
+        except Exception as e:
+            print(e)
+            messages.error(request,"Login Error!")
+            return redirect('vendor_admin_login')
+    return render(request,'vendor_admin_login.html')
+
+
+@superuser_required(login_url='vendor_admin_login')
+def vendor_admin(request):
+    user_ins = User.objects.filter(is_superuser=False)
+    store_users = []
+    for user in user_ins:
+        if store_document.objects.filter(store_vendor=user).first():
+            store_users.append(user)
+    
+    page = request.GET.get('page',1)
+    paginator = Paginator(store_users,10)
+    try:
+        store_users = paginator.page(page)
+    except PageNotAnInteger:
+        store_users = paginator.page(1)
+    except EmptyPage:
+        store_users = paginator.page(paginator.num_pages)
+    context = {'store_users':store_users,'paginator':page}
+    return render(request,'vendor_admin.html',context)
+
+
+@superuser_required(login_url='vendor_admin_login')
+def vendor_gst(request,id):
+    user = User.objects.filter(id=id).first()
+    terms_and_conditions = request.POST.get('termsandconditions', False)
+    if request.method == 'POST':
+        if terms_and_conditions == '':
+            user.is_staff = True
+            user.save()
+    context={'user':user}
+    return render(request,'vendor_gst.html',context)
+
+
+@superuser_required(login_url='vendor_admin_login')
+def vendor_aadhaar(request,id):
+    user = User.objects.filter(id=id).first()
+    terms_and_conditions = request.POST.get('termsandconditions', False)
+    if request.method == 'POST':
+        if terms_and_conditions == '':
+            user.is_staff = True
+            user.save()
+    context={'user':user}
+    return render(request,'vendor_aadhaar.html',context)
+

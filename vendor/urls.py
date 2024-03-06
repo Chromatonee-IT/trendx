@@ -1,8 +1,15 @@
 from django.urls import path
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
+from django.urls import re_path as url
+from django.views.static import serve
 
 urlpatterns = [
-    path('',views.dashboard,name='v_dashboard'),
+    url(r'^media/(?P<path>.*)$', serve,{'document_root':settings.MEDIA_ROOT}),
+    url(r'^static/(?P<path>.*)$', serve,{'document_root':settings.STATIC_ROOT}),
+    path('',views.home,name='v_home'),
+    path('v_dashboard',views.dashboard,name='v_dashboard'),
     path('admin_dashboard/',views.dashboard,name='v_dashboard'),
     path('store_details/',views.vendor_profile,name='store_details'),
     path('products/',views.all_products,name='products'),
@@ -39,4 +46,11 @@ urlpatterns = [
     path('toggle-product/<int:product_id>/', views.toggle_product, name='toggle_product'),
     path('add_product_variant/<int:var_id>/', views.toggle_product, name='add_product_variant'),
     path('generate_invoice/<int:id>', views.generate_invoice, name='generate_invoice'),
+
+    path('vendor_admin_login/', views.vendor_admin_login, name='vendor_admin_login'),
+    path('vendor_admin/', views.vendor_admin, name='vendor_admin'),
+    path('vendor_gst/<int:id>', views.vendor_gst, name='vendor_gst'),
+    path('vendor_aadhaar/<int:id>', views.vendor_aadhaar, name='vendor_aadhaar'),
     ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

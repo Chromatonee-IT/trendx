@@ -14,6 +14,7 @@ class customer(models.Model):
     email = models.EmailField(max_length=200, null=True)
     email_verification_code = models.CharField(max_length=100, blank=True)
     email_isverified = models.BooleanField(default=False)
+    is_paid = models.BooleanField(default=False)
     vendor_active_email = models.BooleanField(default=False)
     birthday = models.DateField(blank=True,null=True)
     code = models.CharField(max_length=12,blank=True)
@@ -45,8 +46,8 @@ class customer(models.Model):
 class LastLogin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     last_login_ip = models.GenericIPAddressField(null=True, blank=True)
-    browser_name = models.CharField(max_length=50,null=True, blank=True)
-    device_name = models.CharField(max_length=50,null=True, blank=True)
+    browser_name = models.CharField(max_length=100,null=True, blank=True)
+    device_name = models.CharField(max_length=100,null=True, blank=True)
     last_login_timestamp = models.DateTimeField(auto_now=True) 
 
     def __str__(self):

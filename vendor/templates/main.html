@@ -164,13 +164,13 @@
                                     <small>Vendor Profile</small>
                                 </div>
                                 <a class="nav-link dropdown-toggle pulse p-0" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static">
-                                    <img class="avatar lg rounded-circle img-thumbnail" src={% if request.user.customer.cusstomer_image%}"/{{request.user.customer.cusstomer_image}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
+                                    <img class="avatar lg rounded-circle img-thumbnail" src={% if request.user.customer.cusstomer_image%}"{{request.user.customer.cusstomer_image.url}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
                                 </a>
                                 <div class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-end p-0 m-0">
                                     <div class="card border-0 w280">
                                         <div class="card-body pb-0">
                                             <div class="d-flex py-1">
-                                                <img class="avatar rounded-circle border" src={% if request.user.customer.cusstomer_image%}"/{{request.user.customer.cusstomer_image}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
+                                                <img class="avatar rounded-circle border" src={% if request.user.customer.cusstomer_image%}"{{request.user.customer.cusstomer_image.url}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
                                                 <div class="flex-fill ms-3">
                                                     <small class="mb-4"><span class="font-weight-bold">{{request.user.customer.name}}</span></small>
 

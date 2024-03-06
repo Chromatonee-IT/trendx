@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'store.apps.StoreConfig',
     'vendor.apps.VendorConfig',
     'storages',
+    'trendx',
 ]
 
 MIDDLEWARE = [
@@ -149,7 +150,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT='staticfiles'
 
-MEDIA_URLS = '/images/'
+MEDIA_DIR =  BASE_DIR/ 'static/images'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 BASE_URL = 'https://cartnbuy.in'
 
