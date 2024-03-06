@@ -117,13 +117,13 @@
                                     <small>Vendor Profile</small>
                                 </div>
                                 <a class="nav-link dropdown-toggle pulse p-0" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static">
-                                    <img class="avatar lg rounded-circle img-thumbnail" src={% if request.user.customer.cusstomer_image%}"/{{request.user.customer.cusstomer_image}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
+                                    <img class="avatar lg rounded-circle img-thumbnail" src={% if request.user.customer.cusstomer_image%}"{{request.user.customer.cusstomer_image.url}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
                                 </a>
                                 <div class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-end p-0 m-0">
                                     <div class="card border-0 w280">
                                         <div class="card-body pb-0">
                                             <div class="d-flex py-1">
-                                                <img class="avatar rounded-circle border" src={% if request.user.customer.cusstomer_image%}"/{{request.user.customer.cusstomer_image}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
+                                                <img class="avatar rounded-circle border" src={% if request.user.customer.cusstomer_image%}"{{request.user.customer.cusstomer_image.url}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
                                                 <div class="flex-fill ms-3">
                                                     <small class="mb-4"><span class="font-weight-bold">{{request.user.customer.name}}</span></small>
 
@@ -210,16 +210,16 @@
                                     <div class="row g-3">
                                         
                                         <div class="col-12">
-                                            <label class="form-label col-6 col-sm-5">Aadhar Card:</label>
-                                           <span><strong><a href="{{user.store_document.adhar_card.url}}" target="_blank">{{user.store_document.adhar_card.url}}</a></strong></span>
+                                            <label class="form-label col-6 col-sm-5">Aadhar Card:</label>{% if user.store_document.adhar_card%}
+                                           <span><strong><a href="{{user.store_document.adhar_card.url}}" target="_blank">{{user.store_document.adhar_card.url}}</a></strong></span>{%endif%}
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label col-6 col-sm-5">Organisation PAN Card:</label>
-                                            <span><strong><a href="{{user.store_document.pan_card.url}}" target="_blank">{{user.store_document.pan_card.url}}</a></strong></span>
+                                            <label class="form-label col-6 col-sm-5">PAN Card:</label>{% if user.store_document.pan_card%}
+                                            <span><strong><a href="{{user.store_document.pan_card.url}}" target="_blank">{{user.store_document.pan_card.url}}</a></strong></span>{% endif %}
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label col-6 col-sm-5">Cancelled Check:</label>
-                                            <span><strong><a href="{{user.store_document.cancel_check.url}}" target="_blank">{{user.store_document.cancel_check.url}}</a></strong></span>
+                                            <label class="form-label col-6 col-sm-5">Cancelled Check:</label>{% if user.store_document.cancel_check%}
+                                            <span><strong><a href="{{user.store_document.cancel_check.url}}" target="_blank">{{user.store_document.cancel_check.url}}</a></strong></span>{% endif %}
                                         </div>
                                     </div>
                                 </div>

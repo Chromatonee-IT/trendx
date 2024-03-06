@@ -846,15 +846,15 @@ def vendor_admin(request):
         if store_document.objects.filter(store_vendor=user).first():
             store_users.append(user)
     
-    page = request.GET.get('page',1)
-    paginator = Paginator(store_users,10)
-    try:
-        store_users = paginator.page(page)
-    except PageNotAnInteger:
-        store_users = paginator.page(1)
-    except EmptyPage:
-        store_users = paginator.page(paginator.num_pages)
-    context = {'store_users':store_users,'paginator':page}
+    # page = request.GET.get('page',1)
+    # paginator = Paginator(store_users,10)
+    # try:
+    #     store_users = paginator.page(page)
+    # except PageNotAnInteger:
+    #     store_users = paginator.page(1)
+    # except EmptyPage:
+    #     store_users = paginator.page(paginator.num_pages)
+    context = {'store_users':store_users}
     return render(request,'vendor_admin.html',context)
 
 

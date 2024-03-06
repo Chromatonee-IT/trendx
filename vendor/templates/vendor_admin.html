@@ -117,13 +117,13 @@
                                     <small>Admin Profile</small>
                                 </div>
                                 <a class="nav-link dropdown-toggle pulse p-0" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static">
-                                    <img class="avatar lg rounded-circle img-thumbnail" src={% if request.user.customer.cusstomer_image%}"/{{request.user.customer.cusstomer_image}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
+                                    <img class="avatar lg rounded-circle img-thumbnail" src={% if request.user.customer.cusstomer_image%}"{{request.user.customer.cusstomer_image.url}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
                                 </a>
                                 <div class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-end p-0 m-0">
                                     <div class="card border-0 w280">
                                         <div class="card-body pb-0">
                                             <div class="d-flex py-1">
-                                                <img class="avatar rounded-circle border" src={% if request.user.customer.cusstomer_image%}"/{{request.user.customer.cusstomer_image}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
+                                                <img class="avatar rounded-circle border" src={% if request.user.customer.cusstomer_image%}"{{request.user.customer.cusstomer_image.url}}"{% else %}"{% static 'images/profile_av.svg'%}"{% endif %} alt="profile">
                                                 <div class="flex-fill ms-3">
                                                     <small class="mb-4"><span class="font-weight-bold">{{request.user.customer.name}}</span></small>
                                                 </div>
@@ -213,24 +213,24 @@
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-md-12">
-                {% if products.has_other_pages %}
+                {% if store_users.has_other_pages %}
                     <nav class="justify-content-end d-flex">
                         <ul class="pagination">
-                    {% if products.has_previous %}
+                    {% if store_users.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="/products/?page={{products.previous_page_number}}" tabindex="-1">Previous</a>
+                            <a class="page-link" href="/vendor_admin/?page={{store_users.previous_page_number}}" tabindex="-1">Previous</a>
                         </li>       
                     {% endif %}
-                    {% for i in products.paginator.page_range %}
-                    {% if i == products.number%}
-                    <li class="page-item" area-current="page"><a class="page-link" href="/products/?page={{i}}">{{i}}</a></li>
+                    {% for i in store_users.paginator.page_range %}
+                    {% if i == store_users.number%}
+                    <li class="page-item" area-current="page"><a class="page-link" href="/vendor_admin/?page={{i}}">{{i}}</a></li>
                     {% else %}
-                    <li class="page-item"><a class="page-link" href="/products/?page={{i}}">{{i}}</a></li>
+                    <li class="page-item"><a class="page-link" href="/vendor_admin/?page={{i}}">{{i}}</a></li>
                     {% endif %}
                     {% endfor %}
-                    {% if products.has_next %}
+                    {% if store_users.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="/products/?page={{products.next_page_number}}">Next</a>
+                            <a class="page-link" href="/vendor_admin/?page={{store_users.next_page_number}}">Next</a>
                         </li>
                     {% endif %}
                         </ul>
