@@ -600,9 +600,9 @@ def vendor_login(request):
                 messages.error(request,"Enter correct credintials!")
                 return redirect('v_login')
             elif user.is_staff == True:
-                # set_user_logged_in_status(False)
                 return redirect('v_dashboard')
             elif cust_ins.email_isverified == False:
+                messages.error(request,"Please verify your email.")
                 return redirect('waiting_email_verification')
             elif store_document_ins == False:
                 messages.error(request,"Please verify your documents.")
@@ -634,13 +634,13 @@ def v_register(request,*args, **kwargs):
                 return redirect('v_register')
             if terms_and_conditions:
                 if User.objects.filter(username=username).exists():
-                    messages.info(request,"Username already exists!")
+                    messages.info(request,"Username is already taken.")
                     return redirect('v_register')
                 if User.objects.filter(email=email).exists():
-                    messages.info(request,"Email already exists!")
+                    messages.info(request,"This email is already registered.")
                     return redirect('v_register')
                 if customer.objects.filter(phone_number=phone_number):
-                    messages.info(request,"Phone Number already exists!")
+                    messages.info(request,"This phone number is already registered.")
                     return redirect('v_register')
                 # Create a new user
                 user = User.objects.create_user(username=username, password=password)
@@ -661,8 +661,7 @@ def v_register(request,*args, **kwargs):
                 messages.error(request,"Kindly agree to the Terms & Conditions.")
                 return redirect('v_register')
         except Exception as e:
-            print(e)
-            messages.error(request,e)
+            messages.error(request,str(e)[:25])
             return redirect('v_register')
     context={}
     return render(request,'v_register.html',context)
@@ -670,8 +669,10 @@ def v_register(request,*args, **kwargs):
 def waiting_email_verification(request):
     cust_ins = customer.objects.filter(user=request.user.id).first()
     if cust_ins == None:
+        messages.error(request,"Please login to continue.")
         return redirect('v_login')
     if cust_ins.email_isverified == True:
+        messages.error(request,"Email is already verified.")
         return redirect('v_register_type')
     else:
         subject = 'Please verify your email.'
@@ -689,19 +690,22 @@ def waiting_email_verification(request):
 def verify_email(request):
     cust_ins = customer.objects.filter(user=request.user.id).first()
     if cust_ins == None:
+        messages.error(request,"Please login to continue.")
         return redirect('v_login')
     elif cust_ins.email_isverified == True:
         return redirect('v_register_type')
     else:
         if request.method == "POST":
             token = request.POST.get('token')
-            print(token)
             cust_ins = customer.objects.filter(user=request.user.id).first()
             if cust_ins != None:
                 if token == cust_ins.email_verification_code:
                     cust_ins.email_isverified = True
                     cust_ins.save()
                     return redirect('v_register_type')
+                elif token == '':
+                    messages.error(request,"Please enter OTP")
+                    return redirect('verify_email')
                 else:
                     messages.error(request,"Invalid OTP")
                     return redirect('verify_email')
@@ -711,51 +715,97 @@ def verify_email(request):
 def v_register_type(request):
     cust_ins = customer.objects.filter(user=request.user.id).first()
     if cust_ins is None:
+        messages.error(request,"Please login to continue.")
         return redirect('v_login')
     elif cust_ins.email_isverified == False:
+        messages.error(request,"Please verify email to continue.")
         return redirect('waiting_email_verification')
     return render(request,'v_register_type.html')
 
 def v_register_gst(request):
+    print(request.user)
     if request.method == 'POST':
         try:
             store_name = request.POST['store_name']
-            gst_no = request.POST['gst_no']
-            micr_code = request.POST['micr_code']
+            gst_no = request.POST.get('gst_no')
+            micr_code = request.POST.get('micr_code')
+            adhar_card = request.FILES.get('adhar_card')
+            cancelled_check = request.FILES.get('cancelled_check')
+            pan_card = request.FILES.get('pan_card')
+            gst_certificate = request.FILES.get('gst_certificate')
+            
+            # Check if any required field is missing
+            if not all([store_name, gst_no, micr_code, adhar_card, cancelled_check, pan_card, gst_certificate]):
+                messages.error(request, "Please fill all the required fields.")
+                return redirect('v_register_gst')
 
-            if not store_document.objects.filter(store_vendor = request.user):
-                if not store_document.objects.filter(gst_no=gst_no).exists():
+            elif not store_document.objects.filter(store_vendor = request.user):
+                if not store_document.objects.filter(gst_no=gst_no).exists() and store_details.objects.filter(store_vendor = request.user,store_name=store_name).exists():
                     store_details.objects.create(store_vendor = request.user,store_name=store_name)
                     store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],gst_no=gst_no,gst_certificate=request.FILES['gst_certificate'],bank_micr=micr_code)
                     if 'trade_lisence' in request.FILES:
                         store_ins = store_document.objects.get(gst_no=gst_no)
                         store_ins.trade_lisence=request.FILES['trade_lisence']
+                elif not store_document.objects.filter(store_vendor = request.user).exists():
+
+                    store_details_ins = store_details.objects.filter(store_vendor = request.user).first()
+                    store_details_ins.store_name = store_name
+                    store_details_ins.save()
+                    store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],gst_no=gst_no,gst_certificate=request.FILES['gst_certificate'],bank_micr=micr_code)
+                    if 'trade_lisence' in request.FILES:
+                        store_ins = store_document.objects.get(gst_no=gst_no)
+                        store_ins.trade_lisence=request.FILES['trade_lisence']
+                    messages.success(request,"We are verifying your account.")
+                    return redirect('v_login')
                 else:
-                    messages.success(request,"GST already exists!")
+                    messages.error(request,"Store name or GST no already exists!")
                     return redirect('v_register_gst')
                 messages.success(request,"We are verifying your account.")
                 return redirect('v_login')
             else:
                 messages.error(request,"Store already exists!")
                 return redirect('v_login')
-        except Exception as e:
+        except Exception:
             messages.error(request,"Fill the form correctly.")
             return redirect('v_register_gst')
-
     return render(request,'register_gst.html')
 
-def v_register_addhar(request):
+
+
+
+def v_register_aadhaar(request):
     if request.method == 'POST':
         try:
             store_name = request.POST['store_name']
-            micr_code = request.POST['micr_code']
-            if not store_document.objects.filter(store_vendor = request.user):
+            micr_code = request.POST.get('micr_code')
+            adhar_card = request.FILES.get('adhar_card')
+            cancelled_check = request.FILES.get('cancelled_check')
+            pan_card = request.FILES.get('pan_card')
+            
+            # Check if any required field is missing
+            if not all([store_name, micr_code, adhar_card, cancelled_check, pan_card]):
+                messages.error(request, "Please fill all the required fields.")
+                return redirect('v_register_gst')
+            if store_name == '':
+                messages.success(request,"Enter a store name.")
+                return redirect('v_register_aadhaar')
+            elif micr_code == '':
+                messages.success(request,"Enter MICR code.")
+                return redirect('v_register_aadhaar')
+            elif not store_document.objects.filter(store_vendor = request.user):
                 if not store_document.objects.filter(store_vendor = request.user).exists():
                     store_details.objects.create(store_vendor = request.user,store_name=store_name)
                     store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],bank_micr=micr_code)
                 else:
                     messages.success(request,"Document already exists!")
-                    return redirect('v_register_gst')
+                    return redirect('v_register_aadhaar')
+                messages.success(request,"We are verifying your account.")
+                return redirect('v_login')
+            elif not store_document.objects.filter(store_vendor = request.user).exists():
+                store_details_ins = store_details.objects.filter(store_vendor = request.user).first()
+                store_details_ins.store_name = store_name
+                store_details_ins.save()
+                store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],bank_micr=micr_code)
                 messages.success(request,"We are verifying your account.")
                 return redirect('v_login')
             else:
@@ -763,8 +813,8 @@ def v_register_addhar(request):
                 return redirect('v_login')
         except Exception as e:
             messages.error(request,"Fill the form correctly.")
-            return redirect('v_register_addhar')
-    return render(request,'register_addhar.html')
+            return redirect('v_register_aadhaar')
+    return render(request,'register_aadhaar.html')
 
 def vendor_logout(request):
     logout(request)

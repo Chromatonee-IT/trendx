@@ -122,6 +122,14 @@
                                             <label class="form-label col-6 col-sm-5">MICR Code:</label>
                                             <span><strong>{% if user.store_document.bank_micr%}{{user.store_document.bank_micr}}{% endif %}</strong></span>
                                         </div>
+                                        <div class="col-12">
+                                            <label class="form-label col-6 col-sm-5">Email:</label>
+                                            <span><strong>{% if user.customer.email%}{{user.customer.email}}{% endif %}</strong></span>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label col-6 col-sm-5">Phone Number:</label>
+                                            <span><strong>{% if user.customer.phone_number%}{{user.customer.phone_number}}{% endif %}</strong></span>
+                                        </div>
                                         
                                     </div>
                                 </div>
