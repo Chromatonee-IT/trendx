@@ -733,33 +733,29 @@ def v_register_gst(request):
             cancelled_check = request.FILES.get('cancelled_check')
             pan_card = request.FILES.get('pan_card')
             gst_certificate = request.FILES.get('gst_certificate')
-            
+            store_doc_ins = store_document.objects.filter(store_vendor = request.user).exists()
+            store_detail_ins = store_details.objects.filter(store_vendor = request.user).exists()
+
             # Check if any required field is missing
             if not all([store_name, gst_no, micr_code, adhar_card, cancelled_check, pan_card, gst_certificate]):
                 messages.error(request, "Please fill all the required fields.")
                 return redirect('v_register_gst')
 
-            elif not store_document.objects.filter(store_vendor = request.user):
-                if not store_document.objects.filter(gst_no=gst_no).exists() and store_details.objects.filter(store_vendor = request.user,store_name=store_name).exists():
-                    store_details.objects.create(store_vendor = request.user,store_name=store_name)
-                    store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],gst_no=gst_no,gst_certificate=request.FILES['gst_certificate'],bank_micr=micr_code)
-                    if 'trade_lisence' in request.FILES:
+            elif store_doc_ins == False and store_detail_ins == False:
+                store_details.objects.create(store_vendor = request.user,store_name=store_name)
+                store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],gst_no=gst_no,gst_certificate=request.FILES['gst_certificate'],bank_micr=micr_code)
+                if 'trade_lisence' in request.FILES:
                         store_ins = store_document.objects.get(gst_no=gst_no)
                         store_ins.trade_lisence=request.FILES['trade_lisence']
-                elif not store_document.objects.filter(store_vendor = request.user).exists():
 
-                    store_details_ins = store_details.objects.filter(store_vendor = request.user).first()
-                    store_details_ins.store_name = store_name
-                    store_details_ins.save()
-                    store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],gst_no=gst_no,gst_certificate=request.FILES['gst_certificate'],bank_micr=micr_code)
-                    if 'trade_lisence' in request.FILES:
-                        store_ins = store_document.objects.get(gst_no=gst_no)
-                        store_ins.trade_lisence=request.FILES['trade_lisence']
-                    messages.success(request,"We are verifying your account.")
-                    return redirect('v_login')
-                else:
-                    messages.error(request,"Store name or GST no already exists!")
-                    return redirect('v_register_gst')
+            elif store_doc_ins == False and store_detail_ins == True:
+                store_details_ins = store_details.objects.filter(store_vendor = request.user).first()
+                store_details_ins.store_name = store_name
+                store_details_ins.save()
+                store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],gst_no=gst_no,gst_certificate=request.FILES['gst_certificate'],bank_micr=micr_code)
+                if 'trade_lisence' in request.FILES:
+                    store_ins = store_document.objects.get(gst_no=gst_no)
+                    store_ins.trade_lisence=request.FILES['trade_lisence']
                 messages.success(request,"We are verifying your account.")
                 return redirect('v_login')
             else:
@@ -781,33 +777,27 @@ def v_register_aadhaar(request):
             adhar_card = request.FILES.get('adhar_card')
             cancelled_check = request.FILES.get('cancelled_check')
             pan_card = request.FILES.get('pan_card')
-            
+            store_doc_ins = store_document.objects.filter(store_vendor = request.user).exists()
+            store_detail_ins = store_details.objects.filter(store_vendor = request.user).exists()
+
             # Check if any required field is missing
             if not all([store_name, micr_code, adhar_card, cancelled_check, pan_card]):
                 messages.error(request, "Please fill all the required fields.")
                 return redirect('v_register_gst')
-            if store_name == '':
-                messages.success(request,"Enter a store name.")
-                return redirect('v_register_aadhaar')
-            elif micr_code == '':
-                messages.success(request,"Enter MICR code.")
-                return redirect('v_register_aadhaar')
-            elif not store_document.objects.filter(store_vendor = request.user):
-                if not store_document.objects.filter(store_vendor = request.user).exists():
-                    store_details.objects.create(store_vendor = request.user,store_name=store_name)
-                    store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],bank_micr=micr_code)
-                else:
-                    messages.success(request,"Document already exists!")
-                    return redirect('v_register_aadhaar')
-                messages.success(request,"We are verifying your account.")
-                return redirect('v_login')
-            elif not store_document.objects.filter(store_vendor = request.user).exists():
+            elif store_doc_ins == False and store_detail_ins == False:
+                print("1")
+                store_details.objects.create(store_vendor = request.user,store_name=store_name)
+                store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],bank_micr=micr_code)
+
+            elif store_doc_ins == False and store_detail_ins == True:
+                print("2")
                 store_details_ins = store_details.objects.filter(store_vendor = request.user).first()
                 store_details_ins.store_name = store_name
                 store_details_ins.save()
                 store_document.objects.create(store_vendor=request.user,adhar_card=request.FILES['adhar_card'],cancel_check=request.FILES['cancelled_check'],pan_card=request.FILES['pan_card'],bank_micr=micr_code)
                 messages.success(request,"We are verifying your account.")
                 return redirect('v_login')
+        
             else:
                 messages.error(request,"Store already exists!")
                 return redirect('v_login')
@@ -890,20 +880,31 @@ def vendor_admin_login(request):
 
 @superuser_required(login_url='vendor_admin_login')
 def vendor_admin(request):
-    user_ins = User.objects.filter(is_superuser=False)
-    store_users = []
-    for user in user_ins:
-        if store_document.objects.filter(store_vendor=user).first():
-            store_users.append(user)
+    store_users = User.objects.filter(
+    store_details__isnull=False,
+    is_superuser=False
+)
     
-    # page = request.GET.get('page',1)
-    # paginator = Paginator(store_users,10)
-    # try:
-    #     store_users = paginator.page(page)
-    # except PageNotAnInteger:
-    #     store_users = paginator.page(1)
-    # except EmptyPage:
-    #     store_users = paginator.page(paginator.num_pages)
+    from django.db.models import Q
+    if request.method == 'GET':
+        search_attr = request.GET.get('search', '')
+        if search_attr:
+            store_users = User.objects.filter(
+                Q(store_details__store_name__icontains=search_attr) |
+                Q(store_details__store_vendor__email__icontains=search_attr),
+                is_superuser=False
+            ).select_related('store_details') 
+
+
+
+    page = request.GET.get('page',1)
+    paginator = Paginator(store_users,10)
+    try:
+        store_users = paginator.page(page)
+    except PageNotAnInteger:
+        store_users = paginator.page(1)
+    except EmptyPage:
+        store_users = paginator.page(paginator.num_pages)
     context = {'store_users':store_users}
     return render(request,'vendor_admin.html',context)
 
@@ -916,6 +917,7 @@ def vendor_gst(request,id):
         if terms_and_conditions == '':
             user.is_staff = True
             user.save()
+        
     context={'user':user}
     return render(request,'vendor_gst.html',context)
 

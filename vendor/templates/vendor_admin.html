@@ -142,6 +142,7 @@
                         <button class="navbar-toggler p-0 border-0 menu-toggle order-3" type="button" data-bs-toggle="collapse" data-bs-target="#mainHeader">
                             <span class="fa fa-bars"></span>
                         </button>
+
         
                         <!-- main menu Search-->
                         <div class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0 ">
@@ -162,6 +163,17 @@
                             <div class="border-0 mb-4"> 
                                 <div class="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom flex-wrap">
                                     <h3 class="fw-bold mb-0">Registered Vendors</h3>
+                                    <div class="btn-group btn-set-task w-sm-100">
+                                        <div>
+                                        <form method="GET" class="d-flex">
+                                            <input type="search" class="form-control m-1" placeholder="Search" name="search" aria-describedby="addon-wrapping">
+                                            <button type="submit" class="input-group-text m-1" id="addon-wrapping"><i class="fa fa-search"></i></button>
+                                        </form>
+                                        </div>
+                                        <div class="btn-group w-sm-100">
+                                            <a href="/vendor_admin/" class="input-group-text m-1 btn-danger" id="addon-wrapping">Reset</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div> <!-- Row end  -->
@@ -195,9 +207,16 @@
                                                     <td>#{{user.id}}</td>
                                                     <td>{% if user.store_document.gst_no%}<a href="/vendor_gst/{{user.id}}">{% else%}<a href="/vendor_aadhaar/{{user.id}}">{% endif%}<strong>{{user.first_name}} {{user.last_name}}</strong></a></td>
                                                     <td>{% if user.store_document.gst_no%}<a href="/vendor_gst/{{user.id}}">{% else%}<a href="/vendor_aadhaar/{{user.id}}">{% endif%}<strong>{{user.store_details}}</strong></a></td>
-                                                    <td>{% if user.store_document.gst_no%}
-                                                    <span class="badge bg-success">With GST</span>{% else %}
-                                                    <span class="badge bg-warning">Without GST</span>{% endif %}</td>
+                                                    <td>
+                                                        
+                                                    {% if user.store_document.gst_no%}
+                                                    <span class="badge bg-success">With GST</span>
+                                                    {% elif not user.store_document%}
+                                                    <span class="badge bg-danger">No Document</span>
+                                                    {% else %}
+                                                    <span class="badge bg-warning">Without GST</span>
+                                                    {% endif %}
+                                                    </td>
                                                     <td>{% if user.customer.is_paid%}Paid{% else%}Unpaid{%endif%}</td>
                                                     <td>{% if user.is_staff%}<span class="badge bg-success">Verified</span>{% else %}<span class="badge bg-warning">Not verified</span>{% endif %}</td>
                                                 </tr>

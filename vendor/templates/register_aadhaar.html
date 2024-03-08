@@ -44,6 +44,17 @@
                                     <div class="col-12 text-center mb-3">
                                         <h5>Create account with Addhar.</h5>
                                     </div>
+                                    <div class="d-flex justify-content-center">
+                                        {% if messages%}{% for message in messages%}
+                                        <div class="alert {{message.tags}} fade show" id="alert-box">
+                                            <div class="d-flex align-items-center">
+                                                <i class='bx bx-info-circle fs-5 m-2'></i>
+                                            {{message}}
+                                            {% endfor %}
+                                            </div>
+                                          </div>
+                                        {% endif %}
+                                    </div>
                                         <div class="col-12">
                                             <label for="inputuserid" class="form-label">Organization Name:</label>
                                             <input type="text" class="form-control" name="store_name" placeholder="Organization Name">

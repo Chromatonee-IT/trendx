@@ -23,7 +23,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
-# CSRF_TRUSTED_ORIGINS = ['https://*.cartnbuy.in','.cartnbuy.in']
+CSRF_TRUSTED_ORIGINS = ['https://*.cartnbuy.in','.cartnbuy.in']
 
 # Application definition
 
@@ -163,29 +163,3 @@ EMAIL_PORT = 587  # Your SMTP port (587 for TLS, 465 for SSL)
 EMAIL_USE_TLS = True  # Use TLS (True/False)
 EMAIL_HOST_USER = 'support@cartnbuy.in'  # Your email address
 EMAIL_HOST_PASSWORD = 'Cartandbuy@123'  # Your email password
-
-
-
-# AWS_ACCESS_KEY_ID = 'AKIAZQ3DSUSVKSU5RYK4'
-# AWS_SECRET_ACCESS_KEY = 'YQcHAA2tmTvl6dKYJ+8o8krzENLWvBBjkJvNR3LT'
-# AWS_STORAGE_BUCKET_NAME = 's3cartandbuy'
-# AWS_S3_SIGNATURE_NAME = 's3v4'
-# AWS_S3_REGION_NAME = 'us-east-2'
-# AWS_S3_FILE_OVERRITE = False
-# AWS_DEFAULT_ACL = None
-# AWS_S3_VERITY = True
-# DEFAULT_FILE_ST0RAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-
-# STORAGES = {
-# 	"default": {
-# 		"BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-#     },
-# 	"staticfiles": {
-# 		"BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-#     },
-# }
-
-# MEDIA_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
-# MEDIA_ROOT = ''
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
