@@ -883,7 +883,7 @@ def vendor_admin(request):
     store_users = User.objects.filter(
     store_details__isnull=False,
     is_superuser=False
-)
+).order_by('date_joined')
     
     from django.db.models import Q
     if request.method == 'GET':
@@ -893,12 +893,10 @@ def vendor_admin(request):
                 Q(store_details__store_name__icontains=search_attr) |
                 Q(store_details__store_vendor__email__icontains=search_attr),
                 is_superuser=False
-            ).select_related('store_details') 
-
-
+            ).select_related('store_details').order_by('date_joined')
 
     page = request.GET.get('page',1)
-    paginator = Paginator(store_users,10)
+    paginator = Paginator(store_users,20)
     try:
         store_users = paginator.page(page)
     except PageNotAnInteger:
@@ -917,7 +915,14 @@ def vendor_gst(request,id):
         if terms_and_conditions == '':
             user.is_staff = True
             user.save()
-        
+            subject = 'Vendor access has been  granted'
+            from_email = settings.EMAIL_HOST_USER
+            to_email = [user.customer.email]
+            base_url = settings.BASE_URL
+            html_content = render_to_string('vedor_access_granted_email.html', {'base_url':base_url,'instance': user})
+            email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)
+            email.attach_alternative(html_content, "text/html")
+            email.send()
     context={'user':user}
     return render(request,'vendor_gst.html',context)
 
@@ -930,6 +935,14 @@ def vendor_aadhaar(request,id):
         if terms_and_conditions == '':
             user.is_staff = True
             user.save()
+            subject = 'Vendor access has been  granted'
+            from_email = settings.EMAIL_HOST_USER
+            to_email = [user.customer.email]
+            base_url = settings.BASE_URL
+            html_content = render_to_string('vedor_access_granted_email.html', {'base_url':base_url,'instance': user})
+            email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)
+            email.attach_alternative(html_content, "text/html")
+            email.send()
     context={'user':user}
     return render(request,'vendor_aadhaar.html',context)
 
