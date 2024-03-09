@@ -9,7 +9,8 @@ urlpatterns = [
     url(r'^media/(?P<path>.*)$', serve,{'document_root':settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root':settings.STATIC_ROOT}),
     path('',views.home,name='v_home'),
-    path('v_dashboard',views.dashboard,name='v_dashboard'),
+    path('terms_and_conditions/',views.terms_and_conditions,name='terms_and_conditions'),
+    path('v_dashboard/',views.dashboard,name='v_dashboard'),
     path('admin_dashboard/',views.dashboard,name='v_dashboard'),
     path('store_details/',views.vendor_profile,name='store_details'),
     path('products/',views.all_products,name='products'),
@@ -49,6 +50,7 @@ urlpatterns = [
 
     path('vendor_admin_login/', views.vendor_admin_login, name='vendor_admin_login'),
     path('vendor_admin/', views.vendor_admin, name='vendor_admin'),
+    path('vendor_admin_all/', views.vendor_admin_all, name='vendor_admin_all'),
     path('vendor_gst/<int:id>', views.vendor_gst, name='vendor_gst'),
     path('vendor_aadhaar/<int:id>', views.vendor_aadhaar, name='vendor_aadhaar'),
     ]

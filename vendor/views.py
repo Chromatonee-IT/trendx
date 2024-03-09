@@ -766,7 +766,8 @@ def v_register_gst(request):
             return redirect('v_register_gst')
     return render(request,'register_gst.html')
 
-
+def terms_and_conditions(request):
+    return render(request,'terms_and_conditions.html')
 
 
 def v_register_aadhaar(request):
@@ -905,6 +906,32 @@ def vendor_admin(request):
         store_users = paginator.page(paginator.num_pages)
     context = {'store_users':store_users}
     return render(request,'vendor_admin.html',context)
+
+@superuser_required(login_url='vendor_admin_login')
+def vendor_admin_all(request):
+    store_users = User.objects.filter(
+    is_superuser=False
+).order_by('date_joined')
+    
+    from django.db.models import Q
+    if request.method == 'GET':
+        search_attr = request.GET.get('search', '')
+        if search_attr:
+            store_users = User.objects.filter(
+                Q(username__icontains=search_attr) | Q(email__icontains=search_attr),
+                is_superuser=False
+            ).select_related('store_details').order_by('date_joined')
+
+    page = request.GET.get('page',1)
+    paginator = Paginator(store_users,20)
+    try:
+        store_users = paginator.page(page)
+    except PageNotAnInteger:
+        store_users = paginator.page(1)
+    except EmptyPage:
+        store_users = paginator.page(paginator.num_pages)
+    context = {'store_users':store_users}
+    return render(request,'vendor_admin_all.html',context)
 
 
 @superuser_required(login_url='vendor_admin_login')
