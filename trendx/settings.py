@@ -20,7 +20,8 @@ SECRET_KEY = '()6f$@712andea35dnw^kmaps8u%kc))p%%^%3i+3h6*hob)wq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = 1800
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = ['https://*.cartnbuy.in','.cartnbuy.in']
@@ -58,6 +59,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "https://4883-45-120-18-138.ngrok-free.app",
+    'https://cartnbuy.in'
   # Replace with your frontend's URL during development
     # Add more origins as needed
 ]
@@ -155,7 +157,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 BASE_URL = 'https://cartnbuy.in'
 
-# settings.py
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.in'  # Your SMTP server

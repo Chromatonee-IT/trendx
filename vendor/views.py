@@ -812,48 +812,108 @@ def vendor_logout(request):
     return redirect('v_login')
 
 
-# def vendor_reset_email(request):
-#     if request.method == 'POST':
-#         email_id = request.POST.get('email')
-#         email_code = str(uuid.uuid4())[:8].replace("_","")
-#         subject = 'Please verify your email.'
-#         from_email = settings.EMAIL_HOST_USER
-#         to_email = [email_id]
-#         # static_image_url = f"{settings.BASE_URL}{settings.STATIC_URL}/images/logo-blue.png"
-#         base_url = settings.BASE_URL
-#         html_content = render_to_string('email_verification.html', {'base_url':base_url,'email_code': email_code})
-#         email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)     
-#         email.attach_alternative(html_content, "text/html")
-#         email.send()
-#         return redirect('/vendor_resetpassword/?email={}'.format(email_id))
-#     return render(request,'vendor_email_reset.html')
+def vendor_reset_email(request):
+    try:
+        email_is_verified = request.session.get('email_is_verified', False)
+        if email_is_verified:
+            messages.info(request,"Email already verified, enter new password.")
+            return redirect('vendor_setpassword')
+        email_code = request.session.get('email_code')
+        if email_code:
+            messages.info(request,"OTP already sent!")
+            return redirect('vendor_resetpassword')
+        if request.method == 'POST':
+            email_id = request.POST.get('email')
+            request.session['email_id'] = email_id
+            if not request.session.get('email_code'):
+                email_code = generate_unique_code()
+                request.session['email_code'] = email_code
+            else:
+                email_code=request.session.get('email_code')
+            subject = 'Please verify your email.'
+            from_email = settings.EMAIL_HOST_USER
+            to_email = [email_id]
+            base_url = settings.BASE_URL
+            html_content = render_to_string('email_verification.html', {'base_url':base_url,'email_code': email_code})
+            email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)     
+            email.attach_alternative(html_content, "text/html")
+            email.send()
+            messages.success(request,"OTP sent. Please check your inbox.")
+            return redirect('/vendor_resetpassword/')
+    except Exception:
+            messages.error(request,"Unexpected error!!")
+            return redirect('/vendor_reset_email/')
+    return render(request,'vendor_email_reset.html')
 
 
-# def vendor_resetpassword(request):
-#     email = request.GET.get('email')
-#     print(email)
-#     cust_ins = customer.objects.filter(email=email).first()
-#     if request.method == 'POST':
-#         user_ins = User.objects.filter(email=email).first()
-#         email_code = request.session.get("email_code")
-#         user_input_code = request.POST.get('user_input_code')
-#         if cust_ins.email_verification_code == user_input_code:
-#             print(user_ins.username)
-#     return render(request,'vendor_forgot_pass.html')
+def vendor_resetpassword(request):
+    try:
+        email_code = request.session.get('email_code')
+        if not email_code:
+            messages.error(request,"Verify your email first!")
+            return redirect('vendor_reset_email')
+        email_is_verified = request.session.get('email_is_verified', False)
+        if email_is_verified:
+            messages.info(request,"Email already verified, enter new password.")
+            return redirect('vendor_setpassword')
+        email_code = request.session.get('email_code')
+        if request.method == 'POST':
+            user_input_code = request.POST.get('token')
+            if email_code == user_input_code:
+                request.session['email_is_verified'] = True
+                messages.success(request,"Email verified, enter new password.")
+                return redirect('vendor_setpassword')
+            else:
+                request.session['email_is_verified'] = False
+                messages.error(request,"Wrong OTP!")
+                return redirect('vendor_resetpassword')
+    except Exception:
+        messages.error(request,"Unexpected error!!")
+        return redirect('vendor_resetpassword')
+    return render(request,'vendor_forgot_pass.html')
 
-# return redirect('/product_details/'+str(product_id))
 
-# def vendor_setpassword(request):
-#     # subject = 'Please verify your email.'
-#     # from_email = settings.EMAIL_HOST_USER
-#     # to_email = [cust_ins.email]
-#     # # static_image_url = f"{settings.BASE_URL}{settings.STATIC_URL}/images/logo-blue.png"
-#     # base_url = settings.BASE_URL
-#     # html_content = render_to_string('email_verification.html', {'base_url':base_url,'customer_ins': cust_ins})
-#     # email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)
-#     # email.attach_alternative(html_content, "text/html")
-#     # email.send()
-#     return render(request,'set_new_password.html')
+def resend_otp_vendor(request):
+    email_id = request.session.get('email_id')
+    email_code=request.session.get('email_code')
+    subject = 'Please verify your email.'
+    from_email = settings.EMAIL_HOST_USER
+    to_email = [email_id]
+    base_url = settings.BASE_URL
+    html_content = render_to_string('email_verification.html', {'base_url':base_url,'email_code': email_code})
+    email = EmailMultiAlternatives(subject, 'This is a plain text message.', from_email, to_email)     
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+    messages.success(request,"OTP sent. Please check your inbox.")
+    return redirect('/vendor_resetpassword/')
+
+
+def vendor_setpassword(request):
+    try:
+        email_code = request.session.get('email_code')
+        if not email_code:
+            messages.error(request,"Verify your email first!")
+            return redirect('vendor_reset_email')
+        email_id = request.session.get('email_id')
+        email_is_verified = request.session.get('email_is_verified', False)
+        if request.method == 'POST':
+            if email_is_verified:
+                password= request.POST.get('password')
+                user = User.objects.filter(email=email_id).first()
+                user.set_password(password)
+                user.save()
+                del request.session['email_id']
+                del request.session['email_code']
+                del request.session['email_is_verified']
+                messages.success(request,"Login credentials changed.")
+                return redirect('v_login')
+            else:
+                messages.error(request,"Verify your OTP first!")
+                return redirect('vendor_resetpassword')
+    except Exception:
+        messages.error(request,"Unexpected error!!")
+        return redirect('vendor_setpassword')
+    return render(request,'set_new_password.html')
 
 
 @csrf_exempt

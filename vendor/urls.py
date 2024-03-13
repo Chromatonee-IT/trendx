@@ -4,6 +4,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import re_path as url
 from django.views.static import serve
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     url(r'^media/(?P<path>.*)$', serve,{'document_root':settings.MEDIA_ROOT}),
@@ -41,9 +43,11 @@ urlpatterns = [
     path('v_register_gst/',views.v_register_gst,name='v_register_gst'),
     path('v_register_aadhaar/',views.v_register_aadhaar,name='v_register_aadhaar'),
     path('vendor_logout/',views.vendor_logout,name='vendor_logout'),
-    # path('vendor_reset_email/',views.vendor_reset_email,name='vendor_reset_email'),
-    # path('vendor_resetpassword/',views.vendor_resetpassword,name='vendor_resetpassword'),
-    # path('vendor_setpassword/',views.vendor_setpassword,name='vendor_setpassword'),
+
+    path('vendor_reset_email/',views.vendor_reset_email,name='vendor_reset_email'),
+    path('vendor_resetpassword/',views.vendor_resetpassword,name='vendor_resetpassword'),
+    path('resend_otp_vendor/',views.resend_otp_vendor,name='resend_otp_vendor'),
+    path('vendor_setpassword/',views.vendor_setpassword,name='vendor_setpassword'),
     path('toggle-product/<int:product_id>/', views.toggle_product, name='toggle_product'),
     path('add_product_variant/<int:var_id>/', views.toggle_product, name='add_product_variant'),
     path('generate_invoice/<int:id>', views.generate_invoice, name='generate_invoice'),

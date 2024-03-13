@@ -65,10 +65,11 @@
                                     <div class="col-12">
                                         <label for="inputuserid" class="form-label">Enter your email:</label>
                                         <input type="text" class="form-control" name="email" placeholder="Enter your email">
+                                        {% comment %} {{form.as_p}} {% endcomment %}
                                     </div>
                                     <div class="col-12 mt-2">
                                         <div class="buttonContainer d-grid">
-                                            <button id="verifyButton"  type="" class="btn btn-lg btn-warning btn-light lift text-uppercase mb-2" value="">Send Code</button>
+                                            <button id="verifyButton"  type="submit" class="btn btn-lg btn-warning btn-light lift text-uppercase mb-2" value="">Send Code</button>
                                         </div>
                                     </div>
                                 </div>
